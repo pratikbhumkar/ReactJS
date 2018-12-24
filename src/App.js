@@ -38,7 +38,7 @@ class Welcome extends Component{
     return(
       <div>
       <p>{this.props.text}</p>
-      <p> welcome to pratik's React Component {this.props.myvar}</p>
+      <p> welcome to pratik's React Component </p>
       </div>);
   };
 }
