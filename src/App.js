@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+var variab=" From a variable!!"
+
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+      
+        {/* <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
             Edit <code>src/App.js</code> and save to reload.
@@ -17,12 +20,26 @@ class App extends Component {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+            Learn React by Pratik Bhumkar "Hello world"
           </a>
-        </header>
+        </header> */}
+        Hey there by Pratik Bhumkar {variab}
+        <p><Welcome text='whoas'></Welcome></p>
+        
       </div>
     );
   }
 }
 
+class Welcome extends Component{
+   
+  render(){
+    
+    return(
+      <div>
+      <p>{this.props.text}</p>
+      <p> welcome to pratik's React Component {this.props.myvar}</p>
+      </div>);
+  };
+}
 export default App;
