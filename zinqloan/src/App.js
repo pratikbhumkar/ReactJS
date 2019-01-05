@@ -1,57 +1,111 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Form, FormGroup,Checkbox,FormControl,ControlLabel, Button } from 'react-bootstrap' // add more if you are using more components from bootstrap
-
-const formInstance=(
-
-  <div className="login" >
-  <h1><center>Zinq</center></h1>
-        <form style={{textAlign:"center"}}>
-          <FormGroup controlId="email" bsSize="large"  >
-            <ControlLabel style={{marginRight:45}}>Email</ControlLabel>
-            <FormControl
-              autoFocus
-              type="email"
-              value="Email Id"
-            />
-          </FormGroup>
-          <br></br>
-          <FormGroup controlId="password" bsSize="large">
-            <ControlLabel style={{marginRight:20}}>Password</ControlLabel>
-            <FormControl
-              value="Password Here"
-              type="password"
-            />
-          </FormGroup>
-          <br></br>
-          <br></br>
-          <Button
-            block
-            bsSize="large"
-            // disabled={!this.validateForm()}
-            type="submit"
-            style={{marginRight:70, width: 120}}
-          >
-            Login
-          </Button>
-          <Button
-            block
-            bsSize="large"
-            // disabled={!this.validateForm()}
-            type="create"
-            style={{ width: 120}}
-          >
-            Create Account
-          </Button>
-        </form>
-      </div>
-)
+import ReactDOM from 'react-dom';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import Create from './Create.js'
+import { BrowserRouter as Router } from "react-router-dom";
+import Welcome from './welcome';
 
 class App extends Component {
-  render() {
-    return (formInstance);
+  
+
+  constructor(props) {
+    super(props);
+    this.state = {username: '',
+                  password: '',
+                  products:[],
+                  User_FirstNameNew: 'pratik',
+                  User_LastNameNew: 'bhumkar',
+                  toWelcome: false,
+                  allGoodFlag:false
+                }
+    
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
+   
+  
+  handleUsernameChange(event) {
+    this.setState({username: event.target.value});
+  }
+
+  handlePasswordChange(event) {
+    this.setState({password: event.target.value});
+  }
+
+
+  handleLogins(event) {
+    // fetch(`http://localhost:5000/user/get?email=${this.state.username}&password=${this.state.password}`)
+    fetch(`http://localhost:5000/user/get?email=prateekbhumkar@gmail.com&password=pratik`)
+    .then((response) => { 
+      return response.json() 
+    }).then((response) => {
+      this.setState({
+        User_FirstNameNew: response.data[0].User_FirstName,
+        User_LastNameNew : response.data[0].User_LastName
+      })
+      var user={
+        FirstName: this.state.User_FirstNameNew,
+        LastName: this.state.User_LastNameNew,
+        status:'',
+        report:''
+      }
+        ReactDOM.render((
+          <Router>
+            <Welcome UserObj={user}/>
+          </Router>
+        ), document.getElementById('root'))
+    })
+    .catch(()=> alert("Login Failed please re-enter!"))
+    }
+  
+  
+  handleRegister(event) {
+    ReactDOM.render((
+      <Router>
+        <Create />
+      </Router>
+    ), document.getElementById('root'))
+  }
+  render() {
+    return (
+<div>
+    <MuiThemeProvider>
+      <div className="login" >
+       <form style={{textAlign:"center"}}>
+       <AppBar title="Zinq"/>
+            <h1>Login</h1>
+              <TextField
+              autoFocus
+              autoComplete
+              hintText="username"
+              type="email"
+              floatingLabelText="Enter username here"
+              style={{ alignItems: 'center'}}
+              onChange = {this.handleUsernameChange}
+              />
+            <br/>
+            <TextField
+              hintText="password"
+              floatingLabelText="Enter password here"
+              type= "password"
+              style={{ alignItems: 'center'}}
+              onChange = {this.handlePasswordChange}
+              />
+            <br/><br/>
+            <RaisedButton label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
+            <RaisedButton label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>
+            
+        </form> 
+      </div>
+    </MuiThemeProvider> 
+  </div>
+      );
+  
+}
 }
 
 export default App;
