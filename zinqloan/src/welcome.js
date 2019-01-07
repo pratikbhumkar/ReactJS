@@ -8,10 +8,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 class Welcome extends Component {
     constructor(props){
         super(props);
-        this.state={
-          first_name:this.props.UserObj.FirstName,
-          last_name:this.props.UserObj.LastName
+        if(typeof this.props.UserObj !== 'undefined'){
+          this.state={
+            first_name:this.props.UserObj.FirstName,
+            last_name:this.props.UserObj.LastName
+          }
         }
+        else{
+          this.state={
+            first_name:'FirstName',
+            last_name:'Surname'
+          }
+        }
+        
       }
       handlePageChange() {
         

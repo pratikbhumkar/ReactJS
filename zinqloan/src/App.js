@@ -38,8 +38,8 @@ class App extends Component {
 
 
   handleLogins(event) {
-    // fetch(`http://localhost:5000/user/get?email=${this.state.username}&password=${this.state.password}`)
-    fetch(`http://localhost:5000/user/get?email=prateekbhumkar@gmail.com&password=pratik`)
+    fetch(`http://localhost:5000/user/get?email=${this.state.username}&password=${this.state.password}`)
+    // fetch(`http://localhost:5000/user/get?email=prateekbhumkar@gmail.com&password=pratik`)
     .then((response) => { 
       return response.json() 
     }).then((response) => {

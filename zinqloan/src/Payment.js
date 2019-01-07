@@ -8,7 +8,17 @@ import App from './App';
 
 class Payment extends Component {
       handleClick() {
+        if(typeof this.props.UserObj !== 'undefined'){
         var userObj= this.props.user
+        }
+        else{
+          var userObj={
+            FirstName: 'First Name',
+            LastName: 'Surname',
+            status:'Couple',
+            report:''
+          }
+        }
         ReactDOM.render(<Income user={userObj}/>, document.getElementById('root'));
       }
       handlePartExpenseChange(event) {

@@ -9,10 +9,25 @@ class Result extends Component {
 
     constructor(props){
         super(props);
-        this.state={
-          userObj:this.props.user,
+        if(typeof this.props.UserObj !== 'undefined'){
+          this.state={
+            userObj:this.props.user,
           FirstName:this.props.user.FirstName,
           LastName:this.props.user.LastName
+          }
+        }
+        else{
+          var user={
+            FirstName: 'First Name',
+            LastName: 'Surname',
+            status:'Couple',
+            report:''
+          }
+          this.state={
+          userObj:user,
+          FirstName:'First Name',
+          LastName:'Surname'
+          }
         }
       }
       HandleLogout(event) {

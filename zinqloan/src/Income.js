@@ -10,13 +10,31 @@ import App from './App';
 class Income extends Component {
     constructor(props){
         super(props);
-        this.state={
-          app_inc:0,
-          app_exp:0,
-          part_inc:0,
-          part_ex:0,
-          userObj:this.props.user
-        }
+        if(typeof this.props.UserObj !== 'undefined'){
+         this.state={
+            app_inc:0,
+            app_exp:0,
+            part_inc:0,
+            part_ex:0,
+            userObj:this.props.user
+          }
+       }
+       else{
+         var user={
+            FirstName: 'First Name',
+            LastName: 'SurName',
+            status:'couple',
+            report:''
+          }
+         this.state={
+            app_inc:0,
+            app_exp:0,
+            part_inc:0,
+            part_ex:0,
+            userObj:user
+         }
+       }
+        
         this.handleClick = this.handleClick.bind(this);
       }
      

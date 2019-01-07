@@ -5,8 +5,11 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cors": "^2.8.5",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.7.1",
     "express": "^4.16.4",
     "expressjs": "^1.0.1",
+    "jest": "^23.6.0",
     "material-ui": "^0.20.2",
     "mysql": "^2.16.0",
     "react": "^16.6.3",
@@ -16,6 +19,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.2",
+    "react-test-renderer": "^16.7.0",
     "save": "^2.3.3"
   },
   "scripts": {
@@ -33,5 +37,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "jest-cli": "^23.6.0"
+  }
 }

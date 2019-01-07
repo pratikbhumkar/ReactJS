@@ -12,12 +12,23 @@ import App from './App';
 class Credit extends Component {
     constructor(props){
         super(props);
-        this.state={
-          first_name:this.props.UserObj.FirstName,
-          last_name:this.props.UserObj.LastName,
-          email:'',
-          number:'',
+        if(typeof this.props.UserObj !== 'undefined'){
+          this.state={
+            first_name:this.props.UserObj.FirstName,
+            last_name:this.props.UserObj.LastName,
+            email:'',
+            number:'',
+          }
         }
+        else{
+          this.state={
+            first_name:'First Name',
+            last_name:'Surname',
+            email:'Email',
+            number:'Number',
+          }
+        }
+       
         this.handleSingleClick = this.handleSingleClick.bind(this);
         this.handleCoupleClick = this.handleCoupleClick.bind(this);
         this.UserObj=this.props.UserObj
