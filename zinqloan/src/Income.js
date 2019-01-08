@@ -61,10 +61,11 @@ class Income extends Component {
            <div >
            <form style={{textAlign:"center"}}>
            <AppBar title="Zinq" >
-           <RaisedButton label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+           <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
             </AppBar>
 
             <TextField
+             id="userInc"
              hintText="Your Income"
              floatingLabelText="Enter your income"
              style={{ alignItems: 'center'}}
@@ -72,6 +73,7 @@ class Income extends Component {
              />
           <br></br>
           <TextField
+             id="userExp"
              hintText="Your Expenses"
              floatingLabelText="Enter your expenses"
              style={{ alignItems: 'center'}}
@@ -79,7 +81,7 @@ class Income extends Component {
              />
           
           <br></br>
-          <RaisedButton label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
+          <RaisedButton id="btnSubmit" label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
 
            </form>
             </div>
@@ -94,16 +96,20 @@ class Income extends Component {
          <MuiThemeProvider>
            <div >
            <form style={{textAlign:"center"}}>
-           <AppBar title="Zinq"/>
+           <AppBar title="Zinq" >
+           <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+            </AppBar>
 
             <TextField
              hintText="Your Income"
+             id="userInc"
              floatingLabelText="Enter your income"
              style={{ alignItems: 'center'}}
              onChange =  {(event,newValue) => this.setState({app_inc:newValue})}
              />
           <br></br>
           <TextField
+             id="userExp"
              hintText="Your Expenses"
              floatingLabelText="Enter your expenses"
              style={{ alignItems: 'center'}}
@@ -127,7 +133,7 @@ class Income extends Component {
              onChange =  {(event,newValue) => this.setState({part_ex:newValue})}
              />
           <br></br>
-          <RaisedButton label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
+          <RaisedButton id="btnSubmit" label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
 
            </form>
             </div>

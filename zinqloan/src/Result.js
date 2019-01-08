@@ -40,7 +40,7 @@ class Result extends Component {
          <div >
          <form style={{textAlign:"center"}}>
          <AppBar title="Zinq" >
-         <RaisedButton label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+         <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
          </AppBar>
       <h1> {this.state.FirstName} {this.state.LastName}</h1>
       <h1> {this.state.userObj.report} </h1>

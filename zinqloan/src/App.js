@@ -82,6 +82,7 @@ class App extends Component {
               autoFocus
               autoComplete
               hintText="username"
+              id="useremail"
               type="email"
               floatingLabelText="Enter username here"
               style={{ alignItems: 'center'}}
@@ -89,6 +90,7 @@ class App extends Component {
               />
             <br/>
             <TextField
+              id="userpwd"
               hintText="password"
               floatingLabelText="Enter password here"
               type= "password"
@@ -96,8 +98,8 @@ class App extends Component {
               onChange = {this.handlePasswordChange}
               />
             <br/><br/>
-            <RaisedButton label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
-            <RaisedButton label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>
+            <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
+            <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>
             
         </form> 
       </div>

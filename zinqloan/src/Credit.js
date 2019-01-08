@@ -62,14 +62,14 @@ class Credit extends Component {
         <div >
             <form style={{textAlign:"center"}}>
             <AppBar title="Zinq" >
-            <RaisedButton label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+            <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
              </AppBar>
                 <h1> <center>Welcome to credit page, {this.state.first_name} {this.state.last_name}</center></h1>
                 
-              <RaisedButton style={{height: 30,width: 5,margin: 25 ,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleSingleClick(event)}>
+              <RaisedButton id="btnSingle" style={{height: 30,width: 5,margin: 25 ,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleSingleClick(event)}>
                 <img src={logo} alt="Single"></img> <p>Single</p>
               </RaisedButton>
-              <RaisedButton style={{height: 30,width: 10,margin: 25,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleCoupleClick(event)} >
+              <RaisedButton id="btnCoup" style={{height: 30,width: 10,margin: 25,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleCoupleClick(event)} >
                 <img src={couple} alt="Couple"></img> <p>Couple</p>
               </RaisedButton>
             </form>

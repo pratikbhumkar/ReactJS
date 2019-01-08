@@ -72,6 +72,7 @@ class Create extends Component {
             <form style={{textAlign:"center"}}>
             <AppBar title="Create Account"/>
             <TextField
+             id="userFN"
              hintText="Enter your First Name"
              floatingLabelText="First Name"
              style={{ alignItems: 'center'}}
@@ -80,6 +81,7 @@ class Create extends Component {
            <br/>
            
            <TextField
+             id="userSN"
              hintText="Enter your surname"
              floatingLabelText="Surname"
              style={{ alignItems: 'center'}}
@@ -87,6 +89,7 @@ class Create extends Component {
              />
              <br/>
              <TextField
+             id="userAdd"
              hintText="Enter your address"
              floatingLabelText="Address"
              style={{ alignItems: 'center'}}
@@ -94,6 +97,7 @@ class Create extends Component {
              />
              <br/>
            <TextField
+             id="userEmail"
              hintText="Enter your Email"
              type="email"
              floatingLabelText="Email"
@@ -102,6 +106,7 @@ class Create extends Component {
              />
            <br/>
            <TextField
+             id="userMob"
              type = "Mobilenumber"
              hintText="Enter your Mobile number"
              style ={{ alignItems: 'center'}}
@@ -110,6 +115,7 @@ class Create extends Component {
              />
            <br/>
            <TextField
+             id="userPwd"
              hintText="Enter password"
              floatingLabelText="Password"
              style={{ alignItems: 'center'}}
@@ -117,6 +123,7 @@ class Create extends Component {
              />
            <br/>
            <TextField
+             id="userRePwd"
              hintText="Re-Enter password"
              type="Password"
              floatingLabelText="Password"
@@ -125,7 +132,7 @@ class Create extends Component {
              />
            <br/>
            
-           <RaisedButton label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
+           <RaisedButton id="BtnUserCreate" label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
             </form>
             </div>
           </MuiThemeProvider>
