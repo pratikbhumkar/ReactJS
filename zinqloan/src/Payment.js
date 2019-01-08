@@ -8,10 +8,14 @@ import App from './App';
 
 class Payment extends Component {
       handleClick() {
-        if(typeof this.props.UserObj !== 'undefined'){
+        alert('typeof check')
+        alert(typeof this.props.user)
+        if(typeof this.props.user !== 'undefined'){
+        alert('in if ')
         var userObj= this.props.user
         }
         else{
+          alert('in else')
           var userObj={
             FirstName: 'First Name',
             LastName: 'Surname',

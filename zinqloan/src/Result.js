@@ -9,7 +9,7 @@ class Result extends Component {
 
     constructor(props){
         super(props);
-        if(typeof this.props.UserObj !== 'undefined'){
+        if(typeof this.props.user !== 'undefined'){
           this.state={
             userObj:this.props.user,
           FirstName:this.props.user.FirstName,

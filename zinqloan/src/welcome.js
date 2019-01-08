@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 class Welcome extends Component {
     constructor(props){
         super(props);
+        
         if(typeof this.props.UserObj !== 'undefined'){
           this.state={
             first_name:this.props.UserObj.FirstName,

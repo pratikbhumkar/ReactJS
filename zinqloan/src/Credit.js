@@ -12,7 +12,10 @@ import App from './App';
 class Credit extends Component {
     constructor(props){
         super(props);
+        // alert('typeof check')
+        // alert(typeof this.props.UserObj)
         if(typeof this.props.UserObj !== 'undefined'){
+          // alert('in if ')
           this.state={
             first_name:this.props.UserObj.FirstName,
             last_name:this.props.UserObj.LastName,
@@ -21,6 +24,7 @@ class Credit extends Component {
           }
         }
         else{
+          // alert('in else')
           this.state={
             first_name:'First Name',
             last_name:'Surname',
@@ -34,11 +38,15 @@ class Credit extends Component {
         this.UserObj=this.props.UserObj
     }
       handleSingleClick(event) {
+        alert('single')
+        alert(typeof this.props.UserObj)
         var UserObj=this.props.UserObj
         UserObj.status='single'
         ReactDOM.render(<Payment user={UserObj}/>, document.getElementById('root'));
       }
       handleCoupleClick(event) {
+        alert('cop')
+        alert(typeof this.props.UserObj)
         var UserObj=this.props.UserObj
         UserObj.status='couple'
         ReactDOM.render(<Payment user={UserObj}/>, document.getElementById('root'));

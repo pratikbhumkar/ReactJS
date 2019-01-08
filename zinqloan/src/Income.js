@@ -10,7 +10,7 @@ import App from './App';
 class Income extends Component {
     constructor(props){
         super(props);
-        if(typeof this.props.UserObj !== 'undefined'){
+        if(typeof this.props.user !== 'undefined'){
          this.state={
             app_inc:0,
             app_exp:0,
