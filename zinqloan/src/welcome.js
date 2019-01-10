@@ -24,7 +24,6 @@ class Welcome extends Component {
         
       }
       handlePageChange() {
-        
         var user=this.props.UserObj
         setTimeout(
           function() {
@@ -40,6 +39,7 @@ class Welcome extends Component {
     render() {
       
       this.handlePageChange()
+      
         return (
             <div>
                   <MuiThemeProvider>
