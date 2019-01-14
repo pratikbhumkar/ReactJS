@@ -162,6 +162,8 @@ class Create extends Component {
            <br/>
            
            <RaisedButton id="BtnUserCreate" label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
+           <RaisedButton id="BtnCancel" label="Cancel" primary={true} style={{margin: 15}} onClick={(event) =>  ReactDOM.render(<App />, document.getElementById('root'))}/>
+
             </form>
             </div>
           </MuiThemeProvider>

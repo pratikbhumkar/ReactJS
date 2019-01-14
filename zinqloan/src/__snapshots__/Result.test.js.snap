@@ -234,9 +234,9 @@ exports[`renders correctly 1`] = `
       </div>
       <h1>
          
-        First Name
+        FirstName
          
-        Surname
+        LastName
       </h1>
       <h1>
          

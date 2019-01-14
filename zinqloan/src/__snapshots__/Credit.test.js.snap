@@ -236,9 +236,9 @@ exports[`renders correctly 1`] = `
          
         <center>
           Welcome to credit page, 
-          First Name
+          FirstName
            
-          Surname
+          LastName
         </center>
       </h1>
       <div

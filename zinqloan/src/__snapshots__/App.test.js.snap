@@ -256,6 +256,7 @@ exports[`renders correctly 1`] = `
             }
           />
         </div>
+        
       </div>
       <br />
       <div
@@ -380,6 +381,7 @@ exports[`renders correctly 1`] = `
             }
           />
         </div>
+        
       </div>
       <br />
       <br />

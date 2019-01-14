@@ -4,24 +4,21 @@ import AppBar from 'material-ui/AppBar';
 import Credit from './Credit'
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
+import User from './Models/UserModel'
 
 class Welcome extends Component {
     constructor(props){
         super(props);
-        
+        var user=new User()
         if(typeof this.props.UserObj !== 'undefined'){
-          this.state={
-            first_name:this.props.UserObj.FirstName,
-            last_name:this.props.UserObj.LastName
-          }
-        }
-        else{
-          this.state={
-            first_name:'FirstName',
-            last_name:'Surname'
-          }
+          user=this.props.UserObj
         }
         
+        
+          this.state={
+            first_name:user.getUserFirstName(),
+            last_name:user.getUserLastName()
+          }
       }
       handlePageChange() {
         var user=this.props.UserObj
@@ -30,29 +27,28 @@ class Welcome extends Component {
             ReactDOM.render((
               <Router>
                 <Credit UserObj={user}/>
-              </Router>
-            ), document.getElementById('root'))},
+              </Router>), document.getElementById('root'))},
           3000
       );
-      }
+    }
 
     render() {
-      
       this.handlePageChange()
-      
         return (
             <div>
                   <MuiThemeProvider>
            <div >
+           <form style={{textAlign:"center"}}>
            <AppBar title="Zinq"/>
+           <h1>Welcome, {this.state.first_name} {this.state.last_name}</h1>
+          <br/>
+          <h4> You will be redirected to credit page shortly </h4>
+           </form>
            </div>
           </MuiThemeProvider>
-          <h1> <center>Welcome, {this.state.first_name} {this.state.last_name}</center></h1>
-          <br/>
-          <h4> <center>You will be redirected to credit page shortly </center></h4>
+          
         </div>
         );
-        
-}
+  }
 }
 export default Welcome;

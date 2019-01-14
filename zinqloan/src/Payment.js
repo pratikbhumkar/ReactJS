@@ -5,24 +5,16 @@ import RaisedButton from 'material-ui/RaisedButton';
 import ReactDOM from 'react-dom';
 import Income from './Income'
 import App from './App';
+import User from './Models/UserModel'
 
 class Payment extends Component {
       handleClick() {
-        if(typeof this.props.user !== 'undefined'){
-        var userObj= this.props.user
+        var user=new User()
+        if(typeof this.props.UserObj !== 'undefined'){
+          user=this.props.UserObj
         }
-        else{
-          var userObj={
-            FirstName: 'First Name',
-            LastName: 'Surname',
-            status:'Couple',
-            report:''
-          }
-        }
-        ReactDOM.render(<Income user={userObj}/>, document.getElementById('root'));
-      }
-      handlePartExpenseChange(event) {
-        ReactDOM.render(<App />, document.getElementById('root'));
+        
+        ReactDOM.render(<Income UserObj={user}/>, document.getElementById('root'));
       }
       HandleLogout(event) {
         ReactDOM.render(<App />, document.getElementById('root'));

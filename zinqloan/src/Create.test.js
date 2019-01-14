@@ -12,7 +12,7 @@ it('renders without crashing', () => {
   const editor =shallow(<Create/>) 
   expect(editor.find('AppBar').length).toEqual(1)
   expect(editor.find('TextField').length).toEqual(7)
-  expect(editor.find('RaisedButton').length).toEqual(1)
+  expect(editor.find('RaisedButton').length).toEqual(2)
   expect(editor.find('AppBar').length).toEqual(1)
 });
 it('renders correctly', () => {
