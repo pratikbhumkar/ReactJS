@@ -7,11 +7,15 @@ import ReactDOM from 'react-dom';
 import Result from './Result';
 import App from './App';
 import User from './Models/UserModel'
-
+/**
+ * Income component captures the user income and checks the user's eligibility, sets the message accordingly.
+ */
 class Income extends Component {
     constructor(props){
         super(props);
+        //Creating the user object.
         var user=new User()
+        //Checking if it is not initialized
         if(typeof this.props.UserObj !== 'undefined'){
          user=this.props.UserObj
        }
@@ -29,26 +33,45 @@ class Income extends Component {
       }
      
 
-      
+      /**
+       * This method calculates the user's eligibility based income and expenses.
+       * It uses the formula (total expenses)/ (total income) and if the result is more than 0.2 then the users request is approved.
+       * else the user is asked to contact zinq.
+       * @param {*} event 
+       */
       handleClick(event) {
+         //Creating the user object.
          var UserObj=new User()
+         //Checking if it is not initialized
          if(typeof this.props.UserObj !== 'undefined'){
             UserObj=this.props.UserObj
           }
-         
+         // Calculating whether the user is eligible.
          var x = (this.state.app_exp+this.state.part_ex)/(this.state.app_inc+this.state.part_inc)
+         //setting user report
          if(x>0.2){
             UserObj.setUserReport('Congratulations!')
          }
          else{
             UserObj.setUserReport('Please contact us.')
          }
+         //Redirecting user and passing the user object.
          ReactDOM.render(<Result UserObj={UserObj}/>, document.getElementById('root'));
       }
+      /**
+       * Logs out the user when clicking the Logout button.
+       * @param {*} event 
+       */
       HandleLogout(event) {
+         //Redirecting user to  login page.
          ReactDOM.render(<App />, document.getElementById('root'));
        }
+   
+   /**
+       * Rendering the Income page.
+       */
     render() {
+       // Rendering contents if the user is single.
       if(this.state.status ==="single"){
          return (
            <div>
@@ -81,6 +104,7 @@ class Income extends Component {
        </div>
         );
       }
+      // Rendering contents if the user is couple.
       else{
          return (
       <div>

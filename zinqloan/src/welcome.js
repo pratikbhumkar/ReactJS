@@ -9,19 +9,24 @@ import User from './Models/UserModel'
 class Welcome extends Component {
     constructor(props){
         super(props);
+        //Creating the user object.
         var user=new User()
+        //Checking if it is not initialized
         if(typeof this.props.UserObj !== 'undefined'){
           user=this.props.UserObj
         }
-        
-        
           this.state={
             first_name:user.getUserFirstName(),
             last_name:user.getUserLastName()
           }
       }
+      /**
+       * This method redirects user to credit page passing the user object along with it.
+       */
       handlePageChange() {
+
         var user=this.props.UserObj
+        //Redirecting with an delay of 3 seconds.
         setTimeout(
           function() {
             ReactDOM.render((
@@ -31,7 +36,9 @@ class Welcome extends Component {
           3000
       );
     }
-
+    /**
+     * Rendering Welcome page contents.
+     */
     render() {
       this.handlePageChange()
         return (

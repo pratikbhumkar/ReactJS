@@ -213,6 +213,7 @@ exports[`renders correctly 1`] = `
             }
           }
           type="email"
+          value=""
         />
         <div>
           <hr
@@ -338,6 +339,7 @@ exports[`renders correctly 1`] = `
             }
           }
           type="password"
+          value=""
         />
         <div>
           <hr

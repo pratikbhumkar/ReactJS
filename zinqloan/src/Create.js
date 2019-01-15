@@ -5,6 +5,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import App from './App';
 import ReactDOM from 'react-dom';
+/**
+ * This component handles creating user tasks.
+ */
 class Create extends Component {
 
     constructor(props){
@@ -30,63 +33,85 @@ class Create extends Component {
         
         this.handleCreateClick = this.handleCreateClick.bind(this);
       }
-
+      /**
+       * This method creates the user account when clicked create button. It verifies the information filled in the form fields.
+       * @param {*} event 
+       */
       handleCreateClick(event) {
         event.preventDefault()
+        //To store errors.
         const errors={}
+        //Regex to check email is valid
         var re =  new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
         var emailVer=re.test(String(this.state.emailAddress).toLowerCase())
+        //Regex to check password is valid
         var strongRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/);
         var PassVer=strongRegex.test(String(this.state.password))
+        //Regex to  check mobile number is valid
         var mobNoRegex= new RegExp(/(^\+[0-9]*$)/)
         var mobNoVer=mobNoRegex.test(String(this.state.number))
+        //Flag to determine that the contents are valid.
         var flagInvalid=false
+        //Checking if all the values are entered.
         if(this.state.first_name.length === 0 | this.state.last_name.length ===0 | this.state.address.length===0 | this.state.emailAddress.length===0 |this.state.number.length===0 | this.state.password.length===0){
           alert("All fields are required, Please enter.")
           flagInvalid=true
         }
+        //Checking if the first name is entered and valid.
         if(this.state.first_name.length <4){
           errors.first_name_error="First name must be atleast 3 characters long"
           flagInvalid=true
         }
+        //Checking if the surname or last name is entered and valid.
         if(this.state.last_name.length <4){
           errors.last_name_error="Surname must be atleast 3 characters long"
           flagInvalid=true
         }
+        //Checking if the address is entered and valid.
         if(this.state.address.length <4){
           errors.address_error="Address must be atleast 3 characters long"
           flagInvalid=true
         }
+        //If email is invalid set error message and set flag to true
         if(emailVer === false){
           errors.emailAddress_error="Email address is invalid"
           flagInvalid=true
         }
+        //If password is invalid set error message and set flag to true
         if(PassVer === false){
           errors.password_error="Password is invalid, Re-enter. Must be 8 characters or longer, must contain uppercase, lowercase, number and a special character"
           flagInvalid=true
         }
+        //If mobile number is invalid set error message and set flag to true
         if(mobNoVer === false){
           errors.number_error="Mobile number invalid"
           flagInvalid=true
         }
+        //If password is invalid set error message and set flag to true
         if(this.state.password !== this.state.password2){
           errors.password2_error="Password and re-enter password donot match!"
           flagInvalid=true
         }
+        //Adding errors to state.
         this.setState({
           ...this.state,
           ...errors
         })
+        //If everything is valid store to database.
         if(flagInvalid === false){
           fetch(`http://localhost:5000/user/add?fname=${this.state.first_name}&sname=${this.state.last_name}&address=${this.state.address}&email=${this.state.emailAddress}&mob=${this.state.number}&password=${this.state.password}`)
           .then(response=> response.json)
           .then(() => {
             alert("Account succesfully created! ")
+            //Redirect to login page.
             ReactDOM.render(<App />, document.getElementById('root'));
             })
           .catch(err => alert(err))
         }
       }
+      /**
+       * Rendering the Create User account page.
+       */
     render() {
         return (
             <div>

@@ -8,14 +8,19 @@ import logo from './stick-single.png'
 import couple from './stick-couple.png'
 import App from './App';
 import User from './Models/UserModel'
-
+/**
+ * Handling the Credit operations.
+ */
 class Credit extends Component {
     constructor(props){
         super(props);
+        //Creating the user object.
         var user=new User()
+        //Checking if it is not initialized
         if(typeof this.props.UserObj !== 'undefined'){
           user=this.props.UserObj
         }
+        //Setting user properties
         this.state={
           first_name:user.getUserFirstName(),
           last_name:user.getUserLastName()
@@ -23,21 +28,41 @@ class Credit extends Component {
         this.handleSingleClick = this.handleSingleClick.bind(this);
         this.handleCoupleClick = this.handleCoupleClick.bind(this);
     }
+    /**
+     * Renders the payment page if the user is single.
+     * @param {*} event 
+     */
       handleSingleClick(event) {
+        //Creating the user object.
         var UserObj=new User()
         var UserObj=this.props.UserObj
+        //Setting user's status as single.
         UserObj.setUserStatus('single')
+        //Redirecting user and passing object.
         ReactDOM.render(<Payment UserObj={UserObj}/>, document.getElementById('root'));
       }
+      /**
+       * Renders the payment page if the user is couple.
+       * @param {*} event 
+       */
       handleCoupleClick(event) {
         var UserObj=new User()
         var UserObj=this.props.UserObj
+        //Setting user's status as single.
         UserObj.setUserStatus('couple')
+        //Redirecting user and passing object.
         ReactDOM.render(<Payment UserObj={UserObj}/>, document.getElementById('root'));
       }
+      /**
+       * Logs out the user when clicking the Logout button.
+       * @param {*} event 
+       */
       HandleLogout(event) {
         ReactDOM.render(<App />, document.getElementById('root'));
       }
+      /**
+       * Rendering the Credit page.
+       */
     render() {
       
         return (

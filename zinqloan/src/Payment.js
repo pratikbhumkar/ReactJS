@@ -8,17 +8,31 @@ import App from './App';
 import User from './Models/UserModel'
 
 class Payment extends Component {
+      /**
+       * Redirects user to Income page.
+       */
       handleClick() {
+        //Creating the user object.
         var user=new User()
+        //Checking if it is not initialized
         if(typeof this.props.UserObj !== 'undefined'){
           user=this.props.UserObj
         }
-        
+        //Redirecting user and passing the user object.
         ReactDOM.render(<Income UserObj={user}/>, document.getElementById('root'));
       }
+      /**
+       * Logs out the user when clicking the Logout button.
+       * @param {*} event 
+       */
       HandleLogout(event) {
+        //Redirecting user to  login page.
         ReactDOM.render(<App />, document.getElementById('root'));
       }
+
+      /**
+       * Rendering the Payment page.
+       */
       render() {
         return (
   <div>
