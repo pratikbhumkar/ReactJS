@@ -36,6 +36,8 @@ app.get('/user/add',(req,res)=>{
     mysqlConnection.query(InsertQuery,(err,results)=>{
         //Checking if there are errors
         if(err){
+            console.log("in error")
+            console.log(err.sqlMessage)
             return res.send(err)
         }
         //If not send the response to client.

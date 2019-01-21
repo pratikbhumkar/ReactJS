@@ -1,4 +1,32 @@
-import React, { Component } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from 'react';
 import './App.css';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -48,10 +76,10 @@ class App extends Component {
     const errors={}
 
     //Regex to check email is valid
-    var re =  new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    var re =  new RegExp(/^(([^&lt;>()\[\]\\.,;:\s@"]+(\.[^&lt;>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     var emailVer=re.test(String(this.state.username).toLowerCase())
     //Regex to store check password is valid
-    var strongRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/);
+    var strongRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&amp;\*])(?=.{8,})/);
     var PassVer=strongRegex.test(String(this.state.password))
     //Flag to determine that the contents are valid.
     var flagInvalid=false
@@ -68,7 +96,7 @@ class App extends Component {
     }
     // If everything is valid, connect to database and check for correctness.
     if(flagInvalid==false){
-        fetch(`http://localhost:5000/user/get?email=${this.state.username}&password=${this.state.password}`)
+        fetch(`http://localhost:5000/user/get?email=${this.state.username}&amp;password=${this.state.password}`)
         .then((response) => { 
           return response.json() 
         }).then((response) => {
@@ -77,9 +105,9 @@ class App extends Component {
         user.setUserLastName(response.data[0].User_LastName)
           
             ReactDOM.render((
-              <Router>
-                <Welcome UserObj={user}/>
-              </Router>
+              &lt;Router>
+                &lt;Welcome UserObj={user}/>
+              &lt;/Router>
             ), document.getElementById('root'))
         })
         .catch(()=> alert("Login Failed please re-enter!"))
@@ -97,22 +125,22 @@ class App extends Component {
  */
   handleRegister(event) {
     ReactDOM.render((
-      <Router>
-        <Create />
-      </Router>
+      &lt;Router>
+        &lt;Create />
+      &lt;/Router>
     ), document.getElementById('root'))
   }
   /**
    * Rendering the Login page.
    */
   render() {
-    const content=<div>
-    <MuiThemeProvider>
-      <div className="login" >
-       <form style={{textAlign:"center"}}>
-       <AppBar title="Zinq"/>
-            <h1>Login</h1>
-              <TextField
+    const content=&lt;div>
+    &lt;MuiThemeProvider>
+      &lt;div className="login" >
+       &lt;form style={{textAlign:"center"}}>
+       &lt;AppBar title="Zinq"/>
+            &lt;h1>Login&lt;/h1>
+              &lt;TextField
               autoFocus
               autoComplete
               hintText="username"
@@ -125,8 +153,8 @@ class App extends Component {
               style={{ alignItems: 'center'}}
               onChange = {this.handleUsernameChange}
               />
-            <br/>
-            <TextField
+            &lt;br/>
+            &lt;TextField
               id="userpwd"
               value={this.state.password}
               hintText="password"
@@ -137,16 +165,38 @@ class App extends Component {
               style={{ alignItems: 'center'}}
               onChange = {this.handlePasswordChange}
               />
-            <br/><br/>
-            <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
-            <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
-        </form> 
-        
-      </div>
-    </MuiThemeProvider> 
-  </div>
+            &lt;br/>&lt;br/>
+            &lt;RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
+            &lt;RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
+        &lt;/form> 
+      &lt;/div>
+    &lt;/MuiThemeProvider> 
+  &lt;/div>
     return(content);
   }
 }
 
 export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 16 2019 03:20:50 GMT+1100 (Australian Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Income.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Income.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from "react";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import ReactDOM from 'react-dom'; 
+import Result from './Result';
+import App from './App';
+import User from './Models/UserModel'
+/**
+ * Income component captures the user income and checks the user's eligibility, sets the message accordingly.
+ */
+class Income extends Component {
+    constructor(props){
+        super(props);
+        //Creating the user object.
+        var user=new User()
+        //Checking if it is not initialized
+        if(typeof this.props.UserObj !== 'undefined'){
+         user=this.props.UserObj
+       }
+        
+         this.state={
+            app_inc:1,
+            app_exp:1,
+            part_inc:1,
+            part_ex:1,
+            first_name:user.getUserFirstName(),
+            last_name:user.getUserLastName(),
+            status:user.getUserStatus()
+          }
+        this.handleClick = this.handleClick.bind(this);
+      }
+     
+
+      /**
+       * This method calculates the user's eligibility based income and expenses.
+       * It uses the formula (total expenses)/ (total income) and if the result is more than 0.2 then the users request is approved.
+       * else the user is asked to contact zinq.
+       * @param {*} event 
+       */
+      handleClick(event) {
+         //Creating the user object.
+         var UserObj=new User()
+         //Checking if it is not initialized
+         if(typeof this.props.UserObj !== 'undefined'){
+            UserObj=this.props.UserObj
+          }
+         // Calculating whether the user is eligible.
+         var x = (this.state.app_exp+this.state.part_ex)/(this.state.app_inc+this.state.part_inc)
+         //setting user report
+         if(x>0.2){
+            UserObj.setUserReport('Congratulations!')
+         }
+         else{
+            UserObj.setUserReport('Please contact us.')
+         }
+         //Redirecting user and passing the user object.
+         ReactDOM.render(&lt;Result UserObj={UserObj}/>, document.getElementById('root'));
+      }
+      /**
+       * Logs out the user when clicking the Logout button.
+       * @param {*} event 
+       */
+      HandleLogout(event) {
+         //Redirecting user to  login page.
+         ReactDOM.render(&lt;App />, document.getElementById('root'));
+       }
+   
+   /**
+       * Rendering the Income page.
+       */
+    render() {
+       // Rendering contents if the user is single.
+      if(this.state.status ==="single"){
+         return (
+           &lt;div>
+                  &lt;MuiThemeProvider>
+           &lt;div >
+           &lt;form style={{textAlign:"center"}}>
+           &lt;AppBar title="Zinq" >
+           &lt;RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+            &lt;/AppBar>
+            &lt;TextField
+             id="userInc"
+             hintText="Your Income"
+             floatingLabelText="Enter your income"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({app_inc:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;TextField
+             id="userExp"
+             hintText="Your Expenses"
+             floatingLabelText="Enter your expenses"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({app_exp:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;RaisedButton id="btnSubmit" label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
+           &lt;/form>
+            &lt;/div>
+          &lt;/MuiThemeProvider>
+       &lt;/div>
+        );
+      }
+      // Rendering contents if the user is couple.
+      else{
+         return (
+      &lt;div>
+         &lt;MuiThemeProvider>
+           &lt;div >
+           &lt;form style={{textAlign:"center"}}>
+           &lt;AppBar title="Zinq" >
+           &lt;RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+            &lt;/AppBar>
+            &lt;TextField
+             hintText="Your Income"
+             id="userInc"
+             floatingLabelText="Enter your income"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({app_inc:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;TextField
+             id="userExp"
+             hintText="Your Expenses"
+             floatingLabelText="Enter your expenses"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({app_exp:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;TextField
+             hintText="Your partner's Income"
+             isHidden="true"
+             id="partin"
+             floatingLabelText="Enter your partner's income"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({part_inc:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;TextField
+             hintText="Your partner's Expenses"
+             id="partex"
+             floatingLabelText="Enter your partner's expenses"
+             style={{ alignItems: 'center'}}
+             onChange =  {(event,newValue) => this.setState({part_ex:newValue})}
+             />
+          &lt;br>&lt;/br>
+          &lt;RaisedButton id="btnSubmit" label="Submit" primary={true} style={{margin: 15}} onClick={(event) => this.handleClick(event)}/>
+
+           &lt;/form>
+            &lt;/div>
+          &lt;/MuiThemeProvider>
+       &lt;/div>
+        );
+      }
+    }
+}
+export default Income;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Income.html">Income</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 16 2019 03:29:24 GMT+1100 (Australian Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

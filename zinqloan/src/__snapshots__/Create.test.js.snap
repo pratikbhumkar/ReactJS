@@ -180,6 +180,7 @@ exports[`renders correctly 1`] = `
           Enter your First Name
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userFN"
           onBlur={[Function]}
@@ -305,6 +306,7 @@ exports[`renders correctly 1`] = `
           Enter your surname
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userSN"
           onBlur={[Function]}
@@ -430,6 +432,7 @@ exports[`renders correctly 1`] = `
           Enter your address
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userAdd"
           onBlur={[Function]}
@@ -521,7 +524,7 @@ exports[`renders correctly 1`] = `
         }
       >
         <label
-          htmlFor="userEmail"
+          htmlFor="userEmailAddress"
           style={
             Object {
               "color": "rgba(0, 0, 0, 0.3)",
@@ -555,8 +558,9 @@ exports[`renders correctly 1`] = `
           Enter your Email
         </div>
         <input
+          autoComplete="off"
           disabled={false}
-          id="userEmail"
+          id="userEmailAddress"
           onBlur={[Function]}
           onChange={[Function]}
           onFocus={[Function]}
@@ -680,6 +684,7 @@ exports[`renders correctly 1`] = `
           Enter your Mobile number
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userMob"
           onBlur={[Function]}
@@ -805,6 +810,7 @@ exports[`renders correctly 1`] = `
           Enter password
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userPwd"
           onBlur={[Function]}
@@ -930,6 +936,7 @@ exports[`renders correctly 1`] = `
           Re-Enter password
         </div>
         <input
+          autoComplete="off"
           disabled={false}
           id="userRePwd"
           onBlur={[Function]}
