@@ -58,13 +58,13 @@ class Create extends Component {
           flagInvalid=true
         }
         //Checking if the first name is entered and valid.
-        if(this.state.first_name.length <4){
-          errors.first_name_error="First name must be atleast 3 characters long"
+        if(this.state.first_name.length <1){
+          errors.first_name_error="Please enter First Name."
           flagInvalid=true
         }
         //Checking if the surname or last name is entered and valid.
-        if(this.state.last_name.length <4){
-          errors.last_name_error="Surname must be atleast 4 characters long"
+        if(this.state.last_name.length <1){
+          errors.last_name_error="Please enter surname!"
           flagInvalid=true
         }
         //Checking if the address is entered and valid.
@@ -206,7 +206,7 @@ class Create extends Component {
            
            <RaisedButton id="BtnUserCreate" label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
            <RaisedButton id="BtnCancel" label="Cancel" primary={true} style={{margin: 15}} onClick={(event) =>  ReactDOM.render(<App />, document.getElementById('root'))}/>
-
+           
             </form>
             </div>
           </MuiThemeProvider>

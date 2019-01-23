@@ -9,6 +9,9 @@ import Create from './Create.js'
 import { BrowserRouter as Router } from "react-router-dom";
 import Welcome from './welcome';
 import User from './Models/UserModel'
+import { GoogleLogin } from 'react-google-login';
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
+import FacebookLogin from 'react-facebook-login';
 /**
  * This is the login component of the application.
  */
@@ -23,6 +26,9 @@ class App extends Component {
                 }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.responseForGoogle = this.responseForGoogle.bind(this);
+    this.responseForFacebook = this.responseForFacebook.bind(this);
+    
   }
 /**
  * This method handles changes in the username 
@@ -91,6 +97,32 @@ class App extends Component {
         })
       }
     }
+    responseForFacebook(facebookUser){
+      var name=(facebookUser.name)
+      var user=new User()
+      var firstname= name.split(' ')[0]
+      var lastname= name.split(' ')[1]
+      user.setUserFirstName(firstname)
+      user.setUserLastName(lastname)
+      
+      ReactDOM.render((
+        <Router>
+          <Welcome UserObj={user}/>
+        </Router>
+      ), document.getElementById('root'))
+
+    }
+    responseForGoogle(googleUser){
+      
+      var user=new User()
+      user.setUserFirstName(googleUser.w3.ofa)
+      user.setUserLastName(googleUser.w3.wea)
+      ReactDOM.render((
+        <Router>
+          <Welcome UserObj={user}/>
+        </Router>
+      ), document.getElementById('root'))
+    }
 /**
  * This method redirects user to the create window, once clicked.
  * @param {*} event 
@@ -106,6 +138,17 @@ class App extends Component {
    * Rendering the Login page.
    */
   render() {
+    const responseGoogleFail = (response) => {
+      console.log(response)
+    }
+    const responseGoogle = (responseFromGoogle) => {
+      this.responseForGoogle(responseFromGoogle)
+    }
+    // const responseFacebook = (responseFromFacebook) => {
+    //   alert('called')
+    //   console.log(responseFromFacebook.name)
+    //   this.responseForFacebook(responseFromFacebook)
+    // }
     const content=<div>
     <MuiThemeProvider>
       <div className="login" >
@@ -140,11 +183,33 @@ class App extends Component {
             <br/><br/>
             <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
             <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
+            <br/>
+            <br/>
+            <GoogleLogin
+              clientId="228016333193-44664g1hnhq023mo7pv1i4itmeduu1df.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogleFail}
+            />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+             <FacebookLogin
+                appId="2150953554964623"
+                autoLoad={true}
+                fields="name,email"
+                // onClick={componentClicked}
+                callback={this.responseForFacebook} />
+            
         </form> 
         
       </div>
     </MuiThemeProvider> 
   </div>
+ 
+  
+ 
     return(content);
   }
 }
