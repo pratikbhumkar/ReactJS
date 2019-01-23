@@ -103,10 +103,11 @@ class Create extends Component {
           .then((response) => { 
             return response.json() 
           }).then((response) => {
-            var response=response.sqlMessage
+            var response=response
             var flag=false
-            if(typeof response !== 'undefined'){
-            if(response.includes("Duplicate entry")){
+            if(typeof response.data.name !== 'undefined'){
+              console.log(response.data)
+            if(response.data.detail.includes("already exists")){
               alert("Email already exists, Please contact Zinq if you forgot the password.")
               flag=true
             }

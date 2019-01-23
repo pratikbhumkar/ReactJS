@@ -27,7 +27,7 @@ class App extends Component {
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.responseForGoogle = this.responseForGoogle.bind(this);
-    this.responseForFacebook = this.responseForFacebook.bind(this);
+    // this.responseForFacebook = this.responseForFacebook.bind(this);
     
   }
 /**
@@ -79,8 +79,8 @@ class App extends Component {
           return response.json() 
         }).then((response) => {
         var user=new User()
-        user.setUserFirstName(response.data[0].User_FirstName)
-        user.setUserLastName(response.data[0].User_LastName)
+        user.setUserFirstName(response.data[0].user_firstname)
+        user.setUserLastName(response.data[0].user_lastname)
           
             ReactDOM.render((
               <Router>
@@ -97,21 +97,21 @@ class App extends Component {
         })
       }
     }
-    responseForFacebook(facebookUser){
-      var name=(facebookUser.name)
-      var user=new User()
-      var firstname= name.split(' ')[0]
-      var lastname= name.split(' ')[1]
-      user.setUserFirstName(firstname)
-      user.setUserLastName(lastname)
+    // responseForFacebook(facebookUser){
+    //   var name=(facebookUser.name)
+    //   var user=new User()
+    //   var firstname= name.split(' ')[0]
+    //   var lastname= name.split(' ')[1]
+    //   user.setUserFirstName(firstname)
+    //   user.setUserLastName(lastname)
       
-      ReactDOM.render((
-        <Router>
-          <Welcome UserObj={user}/>
-        </Router>
-      ), document.getElementById('root'))
+    //   ReactDOM.render((
+    //     <Router>
+    //       <Welcome UserObj={user}/>
+    //     </Router>
+    //   ), document.getElementById('root'))
 
-    }
+    // }
     responseForGoogle(googleUser){
       
       var user=new User()
@@ -144,11 +144,7 @@ class App extends Component {
     const responseGoogle = (responseFromGoogle) => {
       this.responseForGoogle(responseFromGoogle)
     }
-    // const responseFacebook = (responseFromFacebook) => {
-    //   alert('called')
-    //   console.log(responseFromFacebook.name)
-    //   this.responseForFacebook(responseFromFacebook)
-    // }
+    
     const content=<div>
     <MuiThemeProvider>
       <div className="login" >
@@ -195,12 +191,12 @@ class App extends Component {
             <br/>
             <br/>
             <br/>
-             <FacebookLogin
+             {/* <FacebookLogin
                 appId="2150953554964623"
                 autoLoad={true}
                 fields="name,email"
                 // onClick={componentClicked}
-                callback={this.responseForFacebook} />
+                callback={this.responseForFacebook} /> */}
             
         </form> 
         

@@ -13,6 +13,7 @@
     "jsdoc": "^3.5.5",
     "material-ui": "^0.20.2",
     "mysql": "^2.16.0",
+    "pg": "^7.8.0",
     "react": "^16.6.3",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0",
