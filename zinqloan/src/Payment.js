@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import Income from './Income'
 import App from './App';
 import User from './Models/UserModel'
+import Cookies from 'universal-cookie';
 
 class Payment extends Component {
       /**
@@ -26,6 +27,8 @@ class Payment extends Component {
        * @param {*} event 
        */
       HandleLogout(event) {
+        const cookies = new Cookies();
+        cookies.remove('ZinqLoan')
         //Redirecting user to  login page.
         ReactDOM.render(<App />, document.getElementById('root'));
       }

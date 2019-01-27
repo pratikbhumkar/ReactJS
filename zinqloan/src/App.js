@@ -11,24 +11,53 @@ import Welcome from './welcome';
 import User from './Models/UserModel'
 import { GoogleLogin } from 'react-google-login';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
+import Cookies from 'universal-cookie';
+import { Checkbox } from 'material-ui';
 /**
  * This is the login component of the application.
  */
 class App extends Component {
   constructor(props) {
+    
     super(props);
     this.state = {username: '',
                   username_error:'',
                   password: '',
                   password_error:'',
-                  error:[]
+                  rememberMe:false,
+                  error:[],
+                  redirectFlag:false
                 }
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.responseForGoogle = this.responseForGoogle.bind(this);
     // this.responseForFacebook = this.responseForFacebook.bind(this);
     
+  }
+  componentDidMount(){
+      const cookies = new Cookies();
+      var userCookie= cookies.get('ZinqLoan')
+      if(typeof userCookie !== 'undefined'){
+        var user=new User()
+        user.setUserFirstName(userCookie["user_firstname"])
+        user.setUserLastName(userCookie["user_lastname"])
+        this.state.redirectFlag=true
+      }
+      else{
+        this.state.redirectFlag=false
+      }
+     if(this.state.redirectFlag){
+      setTimeout(
+        function() {ReactDOM.render((
+            <Router>
+              <Welcome UserObj={user}/>
+            </Router>
+          ), document.getElementById('root'))},
+          2000
+      );
+     }
+      
   }
 /**
  * This method handles changes in the username 
@@ -73,11 +102,16 @@ class App extends Component {
       flagInvalid=true
     }
     // If everything is valid, connect to database and check for correctness.
-    if(flagInvalid==false){
+    if(flagInvalid===false){
         fetch(`http://localhost:5000/user/get?email=${this.state.username}&password=${this.state.password}`)
         .then((response) => { 
           return response.json() 
         }).then((response) => {
+          if(this.state.rememberMe){
+            const cookies = new Cookies();
+            cookies.set('ZinqLoan', {"user_firstname":response.data[0].user_firstname,"user_lastname":response.data[0].user_lastname},
+             { path: '/' });
+          }
         var user=new User()
         user.setUserFirstName(response.data[0].user_firstname)
         user.setUserLastName(response.data[0].user_lastname)
@@ -150,6 +184,7 @@ class App extends Component {
       <div className="login" >
        <form style={{textAlign:"center"}}>
        <AppBar title="Zinq"/>
+     
             <h1>Login</h1>
               <TextField
               autoFocus
@@ -177,13 +212,22 @@ class App extends Component {
               onChange = {this.handlePasswordChange}
               />
             <br/><br/>
+            
             <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
             <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
             <br/>
+            <Checkbox style={{width:200, marginLeft:650}} value={this.state.rememberMe} labelPosition="right" 
+            label="Remember Me ?"
+            onChangeCapture={(event) => { 
+               this.state.rememberMe=event.target.checked 
+            }}></Checkbox>
+
+
+            <hr style={{"margin": 50}}/>
             <br/>
             <GoogleLogin
               clientId="228016333193-44664g1hnhq023mo7pv1i4itmeduu1df.apps.googleusercontent.com"
-              buttonText="Login"
+              buttonText="Login with Google"
               onSuccess={responseGoogle}
               onFailure={responseGoogleFail}
             />
@@ -191,13 +235,14 @@ class App extends Component {
             <br/>
             <br/>
             <br/>
+            
              {/* <FacebookLogin
                 appId="2150953554964623"
                 autoLoad={true}
                 fields="name,email"
                 // onClick={componentClicked}
                 callback={this.responseForFacebook} /> */}
-            
+                
         </form> 
         
       </div>

@@ -8,6 +8,8 @@ import logo from './stick-single.png'
 import couple from './stick-couple.png'
 import App from './App';
 import User from './Models/UserModel'
+import Cookies from 'universal-cookie';
+
 /**
  * Handling the Credit operations.
  */
@@ -35,7 +37,7 @@ class Credit extends Component {
       handleSingleClick(event) {
         //Creating the user object.
         var UserObj=new User()
-        var UserObj=this.props.UserObj
+        UserObj=this.props.UserObj
         //Setting user's status as single.
         UserObj.setUserStatus('single')
         //Redirecting user and passing object.
@@ -47,7 +49,7 @@ class Credit extends Component {
        */
       handleCoupleClick(event) {
         var UserObj=new User()
-        var UserObj=this.props.UserObj
+        UserObj=this.props.UserObj
         //Setting user's status as single.
         UserObj.setUserStatus('couple')
         //Redirecting user and passing object.
@@ -58,6 +60,8 @@ class Credit extends Component {
        * @param {*} event 
        */
       HandleLogout(event) {
+        const cookies = new Cookies();
+        cookies.remove('ZinqLoan')
         ReactDOM.render(<App />, document.getElementById('root'));
       }
       /**

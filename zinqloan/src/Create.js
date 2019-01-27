@@ -3,14 +3,21 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+// import Checkbox from 'material-ui/Checkbox';  
 import App from './App';
 import ReactDOM from 'react-dom';
+import zxcvbn from 'zxcvbn'
+import { Line } from 'rc-progress';
+import { Checkbox } from "material-ui";
+// import  from '@material-ui/';
+
 /**
  * This component handles creating user tasks.
  */
 class Create extends Component {
 
     constructor(props){
+      
         super(props);
         this.state={
           first_name:'',
@@ -28,11 +35,20 @@ class Create extends Component {
           password2:'',
           password2_error:'',
           responseObjCreate:'',
-          insertSuccess:false
+          insertSuccess:false,
+          passwordCheck1:false,
+          passwordCheck2:false,
+          passwordCheck3:false,
+          passwordCheck4:false,
+          passwordCheck5:false,
+          strength:0
         }
         
         this.handleCreateClick = this.handleCreateClick.bind(this);
+        this.handlePasswordVerification = this.handlePasswordVerification.bind(this);
       }
+
+     
       /**
        * This method creates the user account when clicked create button. It verifies the information filled in the form fields.
        * @param {*} event 
@@ -103,7 +119,6 @@ class Create extends Component {
           .then((response) => { 
             return response.json() 
           }).then((response) => {
-            var response=response
             var flag=false
             if(typeof response.data.name !== 'undefined'){
               console.log(response.data)
@@ -112,7 +127,7 @@ class Create extends Component {
               flag=true
             }
           }
-            if(flag==false){
+            if(flag===false){
               alert("Account succesfully created! ")
             //Redirect to login page.
             ReactDOM.render(<App />, document.getElementById('root'));
@@ -120,6 +135,48 @@ class Create extends Component {
             })
           .catch(err => alert(err))
         }
+      }
+      handlePasswordVerification(event,newValue){
+        this.setState({password:newValue})
+        if(this.state.password.length>7){
+          this.setState({passwordCheck4:true})
+        }
+        else{
+          this.setState({passwordCheck4:false})
+        }
+        var re =  new RegExp(/[0-9]/)
+        if(re.test(newValue)){
+          this.setState({passwordCheck1:true})
+        }
+        else{
+          this.setState({passwordCheck1:false})
+        }
+        re =  new RegExp(/[A-Z]/)
+        if(re.test(newValue)){
+          this.setState({passwordCheck2:true})
+        }
+        else{
+          this.setState({passwordCheck2:false})
+        }
+        re =  new RegExp(/[a-z]/)
+        if(re.test(newValue)){
+          this.setState({passwordCheck3:true})
+        }
+        else{
+          this.setState({passwordCheck3:false})
+        }
+        if(newValue.includes('$')){
+          this.setState({passwordCheck5:true})
+        }
+        else{
+          this.setState({passwordCheck5:false})
+        }
+        
+        var val=zxcvbn(this.state.password).score
+        val=((val/4)*100)
+        this.setState({
+          strength:val
+        })
       }
       /**
        * Rendering the Create User account page.
@@ -183,6 +240,9 @@ class Create extends Component {
              onChange = {(event,newValue) => this.setState({number:newValue})}
              />
            <br/>
+           
+           <br/>
+           
            <TextField
              id="userPwd"
              errorText={this.state.password_error}
@@ -190,8 +250,22 @@ class Create extends Component {
              floatingLabelText="Password"
              autoComplete='off'
              style={{ alignItems: 'center'}}
-             onChange = {(event,newValue) => this.setState({password:newValue})}
+             onChange={(event,newValue) => this.handlePasswordVerification(event,newValue)}
              />
+             <br/>
+             Password Strength: 
+             <br/>
+             <Line style={{width:200}} percent={this.state.strength} strokeWidth="4" strokeColor="Green" />
+             <br/>
+             <div style={{alignSelf:'center',textAlign:'left'}}>
+             <Checkbox style={{width:200, marginLeft:800}} labelPosition="right" label="Number"
+              checked={this.state.passwordCheck1} ></Checkbox>
+             <Checkbox style={{width:200, marginLeft:800}} labelPosition="right" label="Alphabet upper" checked={this.state.passwordCheck2} ></Checkbox>
+             <Checkbox style={{width:200, marginLeft:800}} labelPosition="right" label="Alphabet lower" checked={this.state.passwordCheck3} ></Checkbox>
+             <Checkbox style={{width:200, marginLeft:800}} labelPosition="right" label="More than 8" checked={this.state.passwordCheck4} ></Checkbox>
+             <Checkbox style={{width:200, marginLeft:800}} labelPosition="right" label="Special character" checked={this.state.passwordCheck5} ></Checkbox>
+             </div>
+             
            <br/>
            <TextField
              id="userRePwd"

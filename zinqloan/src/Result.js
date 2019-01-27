@@ -4,6 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import App from './App';
 import ReactDOM from 'react-dom';
+import Cookies from 'universal-cookie';
 import User from './Models/UserModel'
 
 /**
@@ -31,6 +32,8 @@ class Result extends Component {
        * @param {*} event 
        */
       HandleLogout(event) {
+        const cookies = new Cookies();
+        cookies.remove('ZinqLoan')
         ReactDOM.render(<App />, document.getElementById('root'));
       }
       /**

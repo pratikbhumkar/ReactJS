@@ -7,6 +7,8 @@ import ReactDOM from 'react-dom';
 import Result from './Result';
 import App from './App';
 import User from './Models/UserModel'
+import Cookies from 'universal-cookie';
+
 /**
  * Income component captures the user income and checks the user's eligibility, sets the message accordingly.
  */
@@ -63,6 +65,8 @@ class Income extends Component {
        * @param {*} event 
        */
       HandleLogout(event) {
+         const cookies = new Cookies();
+         cookies.remove('ZinqLoan')
          //Redirecting user to  login page.
          ReactDOM.render(<App />, document.getElementById('root'));
        }
