@@ -6,7 +6,7 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Create from './Create.js'
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router,Redirect , Route, Link } from "react-router-dom";
 import Welcome from './welcome';
 import User from './Models/UserModel'
 import { GoogleLogin } from 'react-google-login';
@@ -14,10 +14,16 @@ import { GoogleLogin } from 'react-google-login';
 // import FacebookLogin from 'react-facebook-login';
 import Cookies from 'universal-cookie';
 import { Checkbox } from 'material-ui';
+import {connect} from 'react-redux'
+import {Provider} from 'react-redux'
+import {createStore} from 'redux'
+import reducer from './Reducer/ReducerContent'
+
 /**
  * This is the login component of the application.
  */
 class App extends Component {
+  
   constructor(props) {
     
     super(props);
@@ -27,14 +33,18 @@ class App extends Component {
                   password_error:'',
                   rememberMe:false,
                   error:[],
-                  redirectFlag:false
+                  redirectFlag:false,
+                  firstname:'',
+                  lastname:''
                 }
+                
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.responseForGoogle = this.responseForGoogle.bind(this);
     // this.responseForFacebook = this.responseForFacebook.bind(this);
     
   }
+  
   componentDidMount(){
       const cookies = new Cookies();
       var userCookie= cookies.get('ZinqLoan')
@@ -42,17 +52,27 @@ class App extends Component {
         var user=new User()
         user.setUserFirstName(userCookie["user_firstname"])
         user.setUserLastName(userCookie["user_lastname"])
+        user.setUserLastName(userCookie["user_email"])
         this.state.redirectFlag=true
+        var random = require('math-random')
+        var cookieKey=random()
+        user.setUserCookieKey(cookieKey)
+        cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
+        this.props.onUserLogin(userCookie["user_firstname"],userCookie["user_lastname"],userCookie["user_email"],cookieKey)
+        fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+        &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
+        
       }
       else{
         this.state.redirectFlag=false
       }
      if(this.state.redirectFlag){
+      var store=createStore(reducer)
       setTimeout(
         function() {ReactDOM.render((
-            <Router>
+          <Provider store={store}><Router>
               <Welcome UserObj={user}/>
-            </Router>
+            </Router></Provider>
           ), document.getElementById('root'))},
           2000
       );
@@ -107,22 +127,38 @@ class App extends Component {
         .then((response) => { 
           return response.json() 
         }).then((response) => {
-          if(this.state.rememberMe){
-            const cookies = new Cookies();
-            cookies.set('ZinqLoan', {"user_firstname":response.data[0].user_firstname,"user_lastname":response.data[0].user_lastname},
-             { path: '/' });
+          const cookies = new Cookies();
+          if(response.type=="error"){
+            console.log(response.type,'in error','response')
+            // fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+            // &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'error'}&error=${response}&user_action=${''}`)
           }
-        var user=new User()
-        user.setUserFirstName(response.data[0].user_firstname)
-        user.setUserLastName(response.data[0].user_lastname)
+          else{
+            if(this.state.rememberMe){
+              cookies.set('ZinqLoan', {"user_firstname":response.data[0].user_firstname,"user_lastname":response.data[0].user_lastname,"user_email":this.state.username},
+               { path: '/' });
+            }
+         
+          var random = require('math-random')
+          var user=new User()
+          var cookieKey=random()
+          user.setUserCookieKey(cookieKey)
+          cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
+          fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+          &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
+          user.setUserFirstName(response.data[0].user_firstname)
+          user.setUserLastName(response.data[0].user_lastname)
+          user.setUserEmail(response.data[0].user_email)
+          this.props.onUserLogin(response.data[0].user_firstname,response.data[0].user_lastname,response.data[0].user_email,cookieKey)
+              ReactDOM.render((
+                <Router>
+                  <Welcome UserObj={user}/>
+                </Router>
+              ), document.getElementById('root'))
+          }
           
-            ReactDOM.render((
-              <Router>
-                <Welcome UserObj={user}/>
-              </Router>
-            ), document.getElementById('root'))
         })
-        .catch(()=> alert("Login Failed please re-enter!"))
+        .catch((err)=> console.log(err) )
             }
       else{
         this.setState({
@@ -211,8 +247,8 @@ class App extends Component {
               style={{ alignItems: 'center'}}
               onChange = {this.handlePasswordChange}
               />
-            <br/><br/>
-            
+            <br/>
+            <br/>
             <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
             <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
             <br/>
@@ -242,17 +278,29 @@ class App extends Component {
                 fields="name,email"
                 // onClick={componentClicked}
                 callback={this.responseForFacebook} /> */}
-                
+                {/* <Router>
+                <button>
+                <Redirect to="http://google.com"/>
+                {/* <Link to="http://google.com">google</Link> */}
+                {/* </button> */}
+                {/* </Router> */} 
         </form> 
         
       </div>
     </MuiThemeProvider> 
   </div>
- 
-  
- 
     return(content);
   }
 }
-
-export default App;
+const stateToProps=(state)=>{
+return{
+  }
+}
+const mapdispachToProps=(dispach)=>
+{
+  return{
+    onUserLogin:(firstname,lastname,email,sessionKey)=>dispach({type:'User_Login',FirstName:firstname,LastName:lastname,Email:email,SessionKey:sessionKey})
+  }
+}
+// export default App;
+export default connect(stateToProps,mapdispachToProps)(App);

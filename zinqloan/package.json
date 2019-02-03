@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cors": "^2.8.5",
+    "delay": "^4.1.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "express": "^4.16.4",
@@ -12,6 +13,7 @@
     "jest": "^23.6.0",
     "jsdoc": "^3.5.5",
     "material-ui": "^0.20.2",
+    "math-random": "^1.0.4",
     "mysql": "^2.16.0",
     "pg": "^7.8.0",
     "rc-progress": "^2.3.0",
@@ -24,6 +26,7 @@
     "react-native-elements": "^0.19.1",
     "react-native-hide-show-password-input": "^1.0.7",
     "react-password-mask": "^3.3.1",
+    "react-redux": "^6.0.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.2",

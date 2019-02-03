@@ -3,13 +3,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-// import Checkbox from 'material-ui/Checkbox';  
 import App from './App';
+import {Provider} from 'react-redux'
 import ReactDOM from 'react-dom';
 import zxcvbn from 'zxcvbn'
 import { Line } from 'rc-progress';
 import { Checkbox } from "material-ui";
-// import  from '@material-ui/';
+import {createStore} from 'redux'
+import reducer from './Reducer/ReducerContent'
+import Cookies from 'universal-cookie';
 
 /**
  * This component handles creating user tasks.
@@ -119,22 +121,38 @@ class Create extends Component {
           .then((response) => { 
             return response.json() 
           }).then((response) => {
-            var flag=false
-            if(typeof response.data.name !== 'undefined'){
-              console.log(response.data)
-            if(response.data.detail.includes("already exists")){
-              alert("Email already exists, Please contact Zinq if you forgot the password.")
-              flag=true
+            if(response.type=="error"){
+              var errordetail=response.data.detail
+              alert(errordetail)
+              response.data=JSON.stringify(response.data)
+               fetch(`http://localhost:5000/log/add?user_email=${this.state.emailAddress}
+            &sessionkey=${'0'}&page=${'create'}&entry_type=${'error'}&error=${response.data}&user_action=${''}&error_detail=${errordetail}`)
             }
-          }
-            if(flag===false){
-              alert("Account succesfully created! ")
-            //Redirect to login page.
-            ReactDOM.render(<App />, document.getElementById('root'));
+            else{
+              var flag=false
+              if(typeof response.data.name !== 'undefined'){
+              if(response.data.detail.includes("already exists")){
+                alert("Email already exists, Please contact Zinq if you forgot the password.")
+                flag=true
+              }
             }
-            })
+              if(flag===false){
+                alert("Account succesfully created! ")
+                var store=createStore(reducer)
+              //Redirect to login page.
+              ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+              }
+            }
+          })
           .catch(err => alert(err))
         }
+      }
+      HandleLogout(event) {
+        var store=createStore(reducer)
+        const cookies = new Cookies();
+        cookies.remove('ZinqLoan')
+        //Redirecting user to  login page.
+        ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
       }
       handlePasswordVerification(event,newValue){
         this.setState({password:newValue})
@@ -280,7 +298,8 @@ class Create extends Component {
            <br/>
            
            <RaisedButton id="BtnUserCreate" label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
-           <RaisedButton id="BtnCancel" label="Cancel" primary={true} style={{margin: 15}} onClick={(event) =>  ReactDOM.render(<App />, document.getElementById('root'))}/>
+           <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+              }/>
            
             </form>
             </div>

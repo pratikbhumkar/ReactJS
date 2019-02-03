@@ -9,11 +9,15 @@ import couple from './stick-couple.png'
 import App from './App';
 import User from './Models/UserModel'
 import Cookies from 'universal-cookie';
-
+import {Provider} from 'react-redux'
+import {createStore} from 'redux'
+import reducer from './Reducer/ReducerContent'
+import {connect} from 'react-redux'
 /**
  * Handling the Credit operations.
  */
 class Credit extends Component {
+  
     constructor(props){
         super(props);
         //Creating the user object.
@@ -22,14 +26,30 @@ class Credit extends Component {
         if(typeof this.props.UserObj !== 'undefined'){
           user=this.props.UserObj
         }
+        console.log("from credit")
         //Setting user properties
         this.state={
+          sessionKey:props.SessionKey,
           first_name:user.getUserFirstName(),
-          last_name:user.getUserLastName()
+          last_name:user.getUserLastName(),
+          cookieKey:0,
+          sessionValid:false
         }
+        const cookies = new Cookies();
+        var userSessionCookie= cookies.get('ZinqLoanSession')
+        if(typeof userSessionCookie !== 'undefined'){
+          console.log("in if")
+            this.state.cookieKey= userSessionCookie["key"]
+        }
+        console.log("cookie key",this.state.cookieKey,"sessionkey",this.state.sessionKey)
+
+        if(this.state.sessionKey===this.state.cookieKey)
+            this.state.sessionValid= true
+
         this.handleSingleClick = this.handleSingleClick.bind(this);
         this.handleCoupleClick = this.handleCoupleClick.bind(this);
     }
+
     /**
      * Renders the payment page if the user is single.
      * @param {*} event 
@@ -40,8 +60,11 @@ class Credit extends Component {
         UserObj=this.props.UserObj
         //Setting user's status as single.
         UserObj.setUserStatus('single')
+        this.props.onUserStatusSelection('single')
+        var store=createStore(reducer)
         //Redirecting user and passing object.
-        ReactDOM.render(<Payment UserObj={UserObj}/>, document.getElementById('root'));
+        console.log('hande sing cl')
+        ReactDOM.render(<Provider store={store}><Payment UserObj={UserObj}/></Provider>, document.getElementById('root'));
       }
       /**
        * Renders the payment page if the user is couple.
@@ -52,8 +75,10 @@ class Credit extends Component {
         UserObj=this.props.UserObj
         //Setting user's status as single.
         UserObj.setUserStatus('couple')
+        this.props.onUserStatusSelection('couple')
+        var store=createStore(reducer)
         //Redirecting user and passing object.
-        ReactDOM.render(<Payment UserObj={UserObj}/>, document.getElementById('root'));
+        ReactDOM.render(<Provider store={store}><Payment UserObj={UserObj}/></Provider>, document.getElementById('root'));
       }
       /**
        * Logs out the user when clicking the Logout button.
@@ -62,34 +87,61 @@ class Credit extends Component {
       HandleLogout(event) {
         const cookies = new Cookies();
         cookies.remove('ZinqLoan')
-        ReactDOM.render(<App />, document.getElementById('root'));
+        var store=createStore(reducer)
+        ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
       }
       /**
        * Rendering the Credit page.
        */
     render() {
-      
-        return (
-    <div>
-            <MuiThemeProvider>
-        <div >
-            <form style={{textAlign:"center"}}>
-            <AppBar title="Zinq" >
-            <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
-             </AppBar>
-                <h1> <center>Welcome to credit page, {this.state.first_name} {this.state.last_name}</center></h1>
-                
-              <RaisedButton id="btnSingle" style={{height: 30,width: 5,margin: 25 ,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleSingleClick(event)}>
-                <img src={logo} alt="Single"></img> <p>Single</p>
-              </RaisedButton>
-              <RaisedButton id="btnCoup" style={{height: 30,width: 10,margin: 25,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleCoupleClick(event)} >
-                <img src={couple} alt="Couple"></img> <p>Couple</p>
-              </RaisedButton>
-            </form>
-         </div>
-          </MuiThemeProvider>
-    </div>)
-      }
-    }
+      var sessionValidContent=
+      <div>
+      <MuiThemeProvider>
+  <div >
+      <form style={{textAlign:"center"}}>
+      <AppBar title="Zinq" >
+      <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+       </AppBar>
+          <h1> <center>Welcome to credit page, {this.state.first_name} {this.state.last_name}</center></h1>
+          
+        <RaisedButton id="btnSingle" style={{height: 30,width: 5,margin: 25 ,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleSingleClick(event)}>
+          <img src={logo} alt="Single"></img> <p>Single</p>
+        </RaisedButton>
+        <RaisedButton id="btnCoup" style={{height: 30,width: 10,margin: 25,backgroundColor: 'rgba(52, 52, 52, 1)'}} onClick={(event) => this.handleCoupleClick(event)} >
+          <img src={couple} alt="Couple"></img> <p>Couple</p>
+        </RaisedButton>
+      </form>
+   </div>
+    </MuiThemeProvider>
+</div>
+var sessionInvalidContent=
+<div>
+    <MuiThemeProvider>
+      <div >
+        <form style={{textAlign:"center"}}>
+          <AppBar title="Zinq" />
+          <h1>Session expired, Please Login again</h1>
+        </form>
+      </div>
+    </MuiThemeProvider>
+</div>
+if(!this.state.sessionValid)
+    return (sessionInvalidContent)
+  else
+    return(sessionValidContent)
+   }
+}
 
-export default Credit;
+const stateToProps=(state)=>{
+  return{
+    SessionKey:state.SessionKey
+    }
+}
+const mapdispachToProps=(dispach)=>
+{
+  return{
+    onUserStatusSelection:(status)=>dispach({type:'User_Status',status:status})
+  }
+}
+// export default App;
+export default connect(stateToProps,mapdispachToProps)(Credit);

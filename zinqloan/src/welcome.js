@@ -5,6 +5,9 @@ import Credit from './Credit'
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from "react-router-dom";
 import User from './Models/UserModel'
+import {Provider} from 'react-redux'
+import {createStore} from 'redux'
+import reducer from './Reducer/ReducerContent'
 
 class Welcome extends Component {
     constructor(props){
@@ -24,15 +27,15 @@ class Welcome extends Component {
        * This method redirects user to credit page passing the user object along with it.
        */
       handlePageChange() {
-
+        var store=createStore(reducer)
         var user=this.props.UserObj
         //Redirecting with an delay of 3 seconds.
         setTimeout(
           function() {
-            ReactDOM.render((
+            ReactDOM.render((<Provider store={store}>
               <Router>
                 <Credit UserObj={user}/>
-              </Router>), document.getElementById('root'))},
+              </Router></Provider>), document.getElementById('root'))},
           3000
       );
     }
