@@ -2,17 +2,16 @@ import React, { Component } from "react";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
-import ReactDOM from 'react-dom';
-import Payment from './Payment'
 import logo from './stick-single.png'
 import couple from './stick-couple.png'
-import App from './App';
 import User from './Models/UserModel'
 import Cookies from 'universal-cookie';
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
 import reducer from './Reducer/ReducerContent'
 import {connect} from 'react-redux'
+import { Redirect } from "react-router-dom";
+
 /**
  * Handling the Credit operations.
  */
@@ -23,28 +22,34 @@ class Credit extends Component {
         //Creating the user object.
         var user=new User()
         //Checking if it is not initialized
-        if(typeof this.props.UserObj !== 'undefined'){
-          user=this.props.UserObj
+        if(typeof this.props.user !== 'undefined'){
+          user=this.props.user
         }
-        console.log("from credit")
         //Setting user properties
         this.state={
-          sessionKey:props.SessionKey,
+          sessionKey:user.getUserCookieKey(),
           first_name:user.getUserFirstName(),
           last_name:user.getUserLastName(),
           cookieKey:0,
-          sessionValid:false
+          sessionValid:false,
+          user:props.user,
+          redirectToPayment:false
         }
+        
         const cookies = new Cookies();
         var userSessionCookie= cookies.get('ZinqLoanSession')
         if(typeof userSessionCookie !== 'undefined'){
-          console.log("in if")
+          
             this.state.cookieKey= userSessionCookie["key"]
+            console.log("in if",userSessionCookie["key"],this.state.sessionKey)
         }
         console.log("cookie key",this.state.cookieKey,"sessionkey",this.state.sessionKey)
 
-        if(this.state.sessionKey===this.state.cookieKey)
-            this.state.sessionValid= true
+        if(this.state.sessionKey===this.state.cookieKey){
+          this.state.sessionValid= true
+          console.log("true",this.state.sessionKey,this.state.user.getUserCookieKey())
+        }
+            
 
         this.handleSingleClick = this.handleSingleClick.bind(this);
         this.handleCoupleClick = this.handleCoupleClick.bind(this);
@@ -56,15 +61,15 @@ class Credit extends Component {
      */
       handleSingleClick(event) {
         //Creating the user object.
-        var UserObj=new User()
-        UserObj=this.props.UserObj
+        var UserObj=this.state.user
         //Setting user's status as single.
         UserObj.setUserStatus('single')
         this.props.onUserStatusSelection('single')
-        var store=createStore(reducer)
         //Redirecting user and passing object.
         console.log('hande sing cl')
-        ReactDOM.render(<Provider store={store}><Payment UserObj={UserObj}/></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToPayment:true
+        })
       }
       /**
        * Renders the payment page if the user is couple.
@@ -72,13 +77,14 @@ class Credit extends Component {
        */
       handleCoupleClick(event) {
         var UserObj=new User()
-        UserObj=this.props.UserObj
+        UserObj=this.state.user
         //Setting user's status as single.
         UserObj.setUserStatus('couple')
         this.props.onUserStatusSelection('couple')
-        var store=createStore(reducer)
         //Redirecting user and passing object.
-        ReactDOM.render(<Provider store={store}><Payment UserObj={UserObj}/></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToPayment:true
+        })
       }
       /**
        * Logs out the user when clicking the Logout button.
@@ -87,13 +93,36 @@ class Credit extends Component {
       HandleLogout(event) {
         const cookies = new Cookies();
         cookies.remove('ZinqLoan')
-        var store=createStore(reducer)
-        ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToHome:true
+        })
       }
       /**
        * Rendering the Credit page.
        */
     render() {
+      var store=createStore(reducer)
+      if(this.state.redirectToHome){
+        return(
+          <Provider store={store}>
+          <Redirect to={{
+            pathname: '/'
+        }}/>
+        </Provider>
+
+        )
+      }
+      if(this.state.redirectToPayment){
+        return(
+          <Provider store={store}>
+          <Redirect to={{
+            pathname: '/Payment'
+        }}/>
+        </Provider>
+
+        )
+      }
+      store=createStore(reducer)
       var sessionValidContent=
       <div>
       <MuiThemeProvider>
@@ -134,7 +163,7 @@ if(!this.state.sessionValid)
 
 const stateToProps=(state)=>{
   return{
-    SessionKey:state.SessionKey
+    user:state.user
     }
 }
 const mapdispachToProps=(dispach)=>

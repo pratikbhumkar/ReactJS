@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import Create from './Create.js'
-import { BrowserRouter as Router,Redirect , Route, Link } from "react-router-dom";
-import Welcome from './welcome';
+
+import { Redirect, Link } from "react-router-dom";
+
 import User from './Models/UserModel'
 import { GoogleLogin } from 'react-google-login';
-// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-// import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login';
 import Cookies from 'universal-cookie';
 import { Checkbox } from 'material-ui';
 import {connect} from 'react-redux'
-import {Provider} from 'react-redux'
-import {createStore} from 'redux'
-import reducer from './Reducer/ReducerContent'
 
 /**
  * This is the login component of the application.
@@ -27,7 +22,9 @@ class App extends Component {
   constructor(props) {
     
     super(props);
-    this.state = {username: '',
+    this.state = {
+                  redirectToWelcome:false,
+                  username: '',
                   username_error:'',
                   password: '',
                   password_error:'',
@@ -35,50 +32,66 @@ class App extends Component {
                   error:[],
                   redirectFlag:false,
                   firstname:'',
-                  lastname:''
+                  lastname:'',
+                  user:new User()
                 }
                 
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.responseForGoogle = this.responseForGoogle.bind(this);
-    // this.responseForFacebook = this.responseForFacebook.bind(this);
+    
+    this.responseForFacebook = this.responseForFacebook.bind(this);
     
   }
   
   componentDidMount(){
+      console.log(this.props.user)
       const cookies = new Cookies();
       var userCookie= cookies.get('ZinqLoan')
       if(typeof userCookie !== 'undefined'){
-        var user=new User()
-        user.setUserFirstName(userCookie["user_firstname"])
-        user.setUserLastName(userCookie["user_lastname"])
-        user.setUserLastName(userCookie["user_email"])
+        this.state.user=new User()
+        this.state.user.setUserFirstName(userCookie["user_firstname"])
+        this.state.user.setUserLastName(userCookie["user_lastname"])
+        this.state.user.setUserLastName(userCookie["user_email"])
         this.state.redirectFlag=true
         var random = require('math-random')
         var cookieKey=random()
-        user.setUserCookieKey(cookieKey)
+        this.state.user.setUserCookieKey(cookieKey)
         cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
         this.props.onUserLogin(userCookie["user_firstname"],userCookie["user_lastname"],userCookie["user_email"],cookieKey)
         fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
-        &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
-        
+        &sessionkey=${this.state.user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
+        this.setState({
+          redirectToWelcome:true
+        })
       }
       else{
         this.state.redirectFlag=false
       }
-     if(this.state.redirectFlag){
-      var store=createStore(reducer)
-      setTimeout(
-        function() {ReactDOM.render((
-          <Provider store={store}><Router>
-              <Welcome UserObj={user}/>
-            </Router></Provider>
-          ), document.getElementById('root'))},
-          2000
-      );
-     }
+     
       
   }
+  responseForFacebook = (response) => {
+    this.state.user.setUserFirstName(response.name.split()[0])
+    this.state.user.setUserLastName(response.name.split()[1])
+    this.state.user.setUserEmail(response.email)
+    const cookies = new Cookies();
+    fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+    &sessionkey=${this.state.user.getUserCookieKey()}&page=${'app'}&entry_type=${'error'}&error=${""}&user_action=${''}`)
+    var random = require('math-random')
+    var cookieKey=random()
+    this.state.user.setUserCookieKey(cookieKey)
+    cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
+    fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+    &sessionkey=${this.state.user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
+    
+    this.props.onUserLogin(response.name.split()[0],response.name.split()[1],response.email,cookieKey)
+    this.setState({
+      redirectToWelcome:true
+    })
+  console.log(response.name);
+  console.log(response.email)
+}
 /**
  * This method handles changes in the username 
  * @param {*} event 
@@ -99,9 +112,38 @@ class App extends Component {
  * @param {*} event 
  */
   handleLogins(event) {
+    event.preventDefault()
+    }
+    
+    responseForGoogle(googleUser){
+      this.state.user=new User()
+      this.state.user.setUserFirstName(googleUser.w3.ofa)
+      this.state.user.setUserLastName(googleUser.w3.wea)
+      this.state.user.setUserEmail(googleUser.w3.ig)
+      const cookies = new Cookies();
+      fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+      &sessionkey=${this.state.user.getUserCookieKey()}&page=${'app'}&entry_type=${'error'}&error=${""}&user_action=${''}`)
+      var random = require('math-random')
+      var cookieKey=random()
+      this.state.user.setUserCookieKey(cookieKey)
+      cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
+      fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+      &sessionkey=${this.state.user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
+      
+      this.props.onUserLogin(googleUser.w3.ofa,googleUser.w3.wea,googleUser.w3.ig,cookieKey)
+      this.setState({
+        redirectToWelcome:true
+      })
+    }
+/**
+ * This method redirects user to the create window, once clicked.
+ * @param {*} event 
+ */
+  handleRegister(event) {
+    event.stopPropagation()
     //To store the errors
     const errors={}
-
+    var userObject= new User()
     //Regex to check email is valid
     var re =  new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     var emailVer=re.test(String(this.state.username).toLowerCase())
@@ -129,9 +171,8 @@ class App extends Component {
         }).then((response) => {
           const cookies = new Cookies();
           if(response.type=="error"){
-            console.log(response.type,'in error','response')
-            // fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
-            // &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'error'}&error=${response}&user_action=${''}`)
+            fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
+            &sessionkey=${userObject.getUserCookieKey()}&page=${'app'}&entry_type=${'error'}&error=${response}&user_action=${''}`)
           }
           else{
             if(this.state.rememberMe){
@@ -140,161 +181,139 @@ class App extends Component {
             }
          
           var random = require('math-random')
-          var user=new User()
           var cookieKey=random()
-          user.setUserCookieKey(cookieKey)
+          userObject.setUserCookieKey(cookieKey)
           cookies.set('ZinqLoanSession', {"key":cookieKey }, { path: '/',maxAge:9000 });
           fetch(`http://localhost:5000/log/add?user_email=${this.state.username}
-          &sessionkey=${user.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
-          user.setUserFirstName(response.data[0].user_firstname)
-          user.setUserLastName(response.data[0].user_lastname)
-          user.setUserEmail(response.data[0].user_email)
-          this.props.onUserLogin(response.data[0].user_firstname,response.data[0].user_lastname,response.data[0].user_email,cookieKey)
-              ReactDOM.render((
-                <Router>
-                  <Welcome UserObj={user}/>
-                </Router>
-              ), document.getElementById('root'))
-          }
+          &sessionkey=${userObject.getUserCookieKey()}&page=${'app'}&entry_type=${'success'}&error=${''}&user_action=${'login-success'}`)
           
+          userObject.setUserFirstName(response.data[0].user_firstname)
+          userObject.setUserLastName(response.data[0].user_lastname)
+          userObject.setUserEmail(response.data[0].user_email)
+          
+          this.props.onUserLogin(response.data[0].user_firstname,response.data[0].user_lastname,response.data[0].user_email,cookieKey)
+          
+        }
+        this.setState({
+          user:userObject,
+          redirectToWelcome:true
         })
-        .catch((err)=> console.log(err) )
+        })
+        .catch((err)=>{
+        event.preventDefault();
+        console.log(err)
+         } )
+
             }
       else{
+        event.preventDefault();
         this.setState({
           ...this.state,
           ...errors
         })
       }
-    }
-    // responseForFacebook(facebookUser){
-    //   var name=(facebookUser.name)
-    //   var user=new User()
-    //   var firstname= name.split(' ')[0]
-    //   var lastname= name.split(' ')[1]
-    //   user.setUserFirstName(firstname)
-    //   user.setUserLastName(lastname)
-      
-    //   ReactDOM.render((
-    //     <Router>
-    //       <Welcome UserObj={user}/>
-    //     </Router>
-    //   ), document.getElementById('root'))
-
-    // }
-    responseForGoogle(googleUser){
-      
-      var user=new User()
-      user.setUserFirstName(googleUser.w3.ofa)
-      user.setUserLastName(googleUser.w3.wea)
-      ReactDOM.render((
-        <Router>
-          <Welcome UserObj={user}/>
-        </Router>
-      ), document.getElementById('root'))
-    }
-/**
- * This method redirects user to the create window, once clicked.
- * @param {*} event 
- */
-  handleRegister(event) {
-    ReactDOM.render((
-      <Router>
-        <Create />
-      </Router>
-    ), document.getElementById('root'))
   }
   /**
    * Rendering the Login page.
    */
   render() {
+    
     const responseGoogleFail = (response) => {
-      console.log(response)
+      
     }
     const responseGoogle = (responseFromGoogle) => {
       this.responseForGoogle(responseFromGoogle)
     }
     
-    const content=<div>
-    <MuiThemeProvider>
-      <div className="login" >
-       <form style={{textAlign:"center"}}>
-       <AppBar title="Zinq"/>
-     
-            <h1>Login</h1>
+    if(this.state.redirectToWelcome){
+      return(
+        <Redirect to={{
+          pathname: '/Welcome'
+      }}/>
+      )
+    }
+    else
+    return(
+    <div>
+      <MuiThemeProvider>
+        <div className="login" >
+         <form style={{textAlign:"center"}}>
+         <AppBar title="Zinq"/>
+       <div id="hey"></div>
+              <h1 style={{"color": "#565454"}}>Login</h1>
+                <TextField
+                autoFocus
+                autoComplete
+                hintText="username"
+                value={this.state.username}
+                errorText={this.state.username_error}
+                id="useremail"
+                error={this.state.error.usn}
+                type="email"
+                floatingLabelText="Enter username here"
+                style={{ alignItems: 'center'}}
+                onChange = {this.handleUsernameChange}
+                />
+              <br/>
               <TextField
-              autoFocus
-              autoComplete
-              hintText="username"
-              value={this.state.username}
-              errorText={this.state.username_error}
-              id="useremail"
-              error={this.state.error.usn}
-              type="email"
-              floatingLabelText="Enter username here"
-              style={{ alignItems: 'center'}}
-              onChange = {this.handleUsernameChange}
+                id="userpwd"
+                value={this.state.password}
+                hintText="password"
+                floatingLabelText="Enter password here"
+                errorText={this.state.password_error}
+                type= "password"
+                error={this.state.error.pwd}
+                style={{ alignItems: 'center'}}
+                onChange = {this.handlePasswordChange}
+                />
+              <br/>
+              <br/>
+              <RaisedButton  id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}}
+               onClick={(event) => { this.handleRegister(event) }}
+               >
+              </RaisedButton>
+           
+              <Link to={{ pathname: "/Create" }}>
+              <RaisedButton  id="btnCreate" label="Create Account new" primary={true} style={{margin: 15 ,minWidth: 150}} > 
+               </RaisedButton>
+               </Link>
+              <br/>
+              <Checkbox style={{width:200, marginLeft:650}} value={this.state.rememberMe} labelPosition="right" 
+              label="Remember Me ?"
+              onChangeCapture={(event) => { 
+                 this.state.rememberMe=event.target.checked 
+              }}></Checkbox>
+  
+  
+              <hr style={{"margin": 10}}/>
+              <h4 style={{"color": "#878181"}}>use social login?</h4>
+              
+              <GoogleLogin
+                clientId="228016333193-44664g1hnhq023mo7pv1i4itmeduu1df.apps.googleusercontent.com"
+                buttonText="Login with Google"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogleFail}
               />
-            <br/>
-            <TextField
-              id="userpwd"
-              value={this.state.password}
-              hintText="password"
-              floatingLabelText="Enter password here"
-              errorText={this.state.password_error}
-              type= "password"
-              error={this.state.error.pwd}
-              style={{ alignItems: 'center'}}
-              onChange = {this.handlePasswordChange}
-              />
-            <br/>
-            <br/>
-            <RaisedButton id="btnLogin" label="Login" primary={true} style={{margin: 15,minWidth: 150}} onClick={(event) => { this.handleLogins() }}/>
-            <RaisedButton id="btnCreate" label="Create Account" primary={true} style={{margin: 15 ,minWidth: 150}} onClick={(event) => this.handleRegister()}/>   
-            <br/>
-            <Checkbox style={{width:200, marginLeft:650}} value={this.state.rememberMe} labelPosition="right" 
-            label="Remember Me ?"
-            onChangeCapture={(event) => { 
-               this.state.rememberMe=event.target.checked 
-            }}></Checkbox>
-
-
-            <hr style={{"margin": 50}}/>
-            <br/>
-            <GoogleLogin
-              clientId="228016333193-44664g1hnhq023mo7pv1i4itmeduu1df.apps.googleusercontent.com"
-              buttonText="Login with Google"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogleFail}
-            />
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            
-             {/* <FacebookLogin
+              <br/><br/>
+              <FacebookLogin
                 appId="2150953554964623"
-                autoLoad={true}
+                autoLoad={false}
                 fields="name,email"
-                // onClick={componentClicked}
-                callback={this.responseForFacebook} /> */}
-                {/* <Router>
-                <button>
-                <Redirect to="http://google.com"/>
-                {/* <Link to="http://google.com">google</Link> */}
-                {/* </button> */}
-                {/* </Router> */} 
-        </form> 
-        
-      </div>
-    </MuiThemeProvider> 
-  </div>
-    return(content);
+                callback={this.responseForFacebook} /> 
+              
+              
+          </form> 
+          
+        </div>
+      </MuiThemeProvider> 
+    </div>
+    );
   }
 }
 const stateToProps=(state)=>{
 return{
-  }
+      user:state.user
+    }
 }
 const mapdispachToProps=(dispach)=>
 {
@@ -302,5 +321,5 @@ const mapdispachToProps=(dispach)=>
     onUserLogin:(firstname,lastname,email,sessionKey)=>dispach({type:'User_Login',FirstName:firstname,LastName:lastname,Email:email,SessionKey:sessionKey})
   }
 }
-// export default App;
+// export default App; 
 export default connect(stateToProps,mapdispachToProps)(App);

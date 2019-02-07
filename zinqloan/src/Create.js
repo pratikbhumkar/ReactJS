@@ -121,7 +121,7 @@ class Create extends Component {
           .then((response) => { 
             return response.json() 
           }).then((response) => {
-            if(response.type=="error"){
+            if(response.type==="error"){
               var errordetail=response.data.detail
               alert(errordetail)
               response.data=JSON.stringify(response.data)
@@ -201,7 +201,9 @@ class Create extends Component {
        */
     render() {
         return (
+          
             <div>
+              
                   <MuiThemeProvider>
            <div >
             <form style={{textAlign:"center"}}>
@@ -298,8 +300,8 @@ class Create extends Component {
            <br/>
            
            <RaisedButton id="BtnUserCreate" label="Create" primary={true} style={{margin: 15}} onClick={(event) => this.handleCreateClick(event)}/>
-           <RaisedButton id="btnLogout" label="Log out" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
-              }/>
+           <RaisedButton id="btnLogout" label="Cancel" primary={true} style={{margin: 15}} onClick={(event) => this.HandleLogout(event)}/> 
+              
            
             </form>
             </div>

@@ -3,15 +3,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import ReactDOM from 'react-dom'; 
-import Result from './Result';
 import {Provider} from 'react-redux'
-import App from './App';
 import User from './Models/UserModel'
 import Cookies from 'universal-cookie';
 import {connect} from 'react-redux'
 import {createStore} from 'redux'
 import reducer from './Reducer/ReducerContent'
+import { Redirect } from "react-router-dom";
 /**
  * Income component captures the user income and checks the user's eligibility, sets the message accordingly.
  */
@@ -21,28 +19,28 @@ class Income extends Component {
         //Creating the user object.
         var user=new User()
         //Checking if it is not initialized
-        if(typeof this.props.UserObj !== 'undefined'){
-         user=this.props.UserObj
+        if(typeof this.props.user!== 'undefined'){
+         user=this.props.user
        }
-        console.log('in income')
          this.state={
             app_inc:0,
             app_exp:0,
             part_inc:0,
             part_ex:0,
             cookieKey:0,
-            sessionKey:props.SessionKey,
+            sessionKey:user.getUserCookieKey(),
             sessionValid:false ,
             first_name:user.getUserFirstName(),
             last_name:user.getUserLastName(),
-            status:user.getUserStatus()
+            status:user.getUserStatus(),
+            user:props.user,
+            redirectToResult:false
           }
           const cookies = new Cookies();
           var userSessionCookie= cookies.get('ZinqLoanSession')
           if(typeof userSessionCookie !== 'undefined'){
               this.state.cookieKey= userSessionCookie["key"]
           }
-          console.log("cookie key",this.state.cookieKey,"sessionkey",this.state.sessionKey)
           if(this.state.sessionKey===this.state.cookieKey)
               this.state.sessionValid= true
         
@@ -58,15 +56,15 @@ class Income extends Component {
        */
       handleClick(event) {
          
-         var store=createStore(reducer)
          //Creating the user object.
          var UserObj=new User()
          //Checking if it is not initialized
-         if(typeof this.props.UserObj !== 'undefined'){
-            UserObj=this.props.UserObj
+         if(typeof this.props.user !== 'undefined'){
+            UserObj=this.props.user
           }
          // Calculating whether the user is eligible.
          var x = (this.state.app_exp+this.state.part_ex)/(this.state.app_inc+this.state.part_inc)
+        
          //setting user report
          if(x>0.2){
             var report='Congratulations!'
@@ -79,24 +77,48 @@ class Income extends Component {
          this.props.onIncomeExpenseSelection((Number(this.state.app_inc)+Number(this.state.part_inc)),
          Number(this.state.app_exp)+Number(this.state.part_ex),report)
          //Redirecting user and passing the user object.
-         ReactDOM.render(<Provider store={store}><Result UserObj={UserObj}/></Provider>, document.getElementById('root'));
+         this.setState({
+            redirectToResult:true
+          })
       }
       /**
        * Logs out the user when clicking the Logout button.
        * @param {*} event 
        */
       HandleLogout(event) {
-         var store=createStore(reducer)
          const cookies = new Cookies();
          cookies.remove('ZinqLoan')
          //Redirecting user to  login page.
-         ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+         this.setState({
+            redirectToHome:true
+          })
        }
    
    /**
        * Rendering the Income page.
        */
     render() {
+      var store=createStore(reducer)
+      if(this.state.redirectToHome){
+         return(
+           <Provider store={store}>
+           <Redirect to={{
+             pathname: '/'
+         }}/>
+         </Provider>
+ 
+         )
+       }
+      if(this.state.redirectToResult){
+         return(
+           <Provider store={store}>
+           <Redirect to={{
+             pathname: '/Result'
+         }}/>
+         </Provider>
+ 
+         )
+       }
       var sessionInvalidContent=
       <div>
           <MuiThemeProvider>
@@ -199,7 +221,8 @@ class Income extends Component {
 }
 const stateToProps=(state)=>{
    return{
-      SessionKey:state.SessionKey   }
+      user:state.user
+     }
  }
    const mapdispachToProps=(dispach)=>
    {

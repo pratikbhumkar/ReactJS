@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
-import App from './App';
-import ReactDOM from 'react-dom';
 import Cookies from 'universal-cookie';
 import User from './Models/UserModel'
 import {connect} from 'react-redux'
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
+import { Redirect } from "react-router-dom";
 import reducer from './Reducer/ReducerContent'
 /**
  * The result component displays whether the user is elible for the loan or not.
@@ -21,16 +20,18 @@ class Result extends Component {
         //Creating the user object.
         var user=new User()
         //Checking if it is not initialized
-        if(typeof this.props.UserObj !== 'undefined'){
-          user=this.props.UserObj
+        if(typeof this.props.user!== 'undefined'){
+          user=this.props.user
         }
         //Setting user properties.
           this.state={
             first_name:user.getUserFirstName(),
             last_name:user.getUserLastName(),
-            report:user.getUserReport(),cookieKey:0,
+            report:user.getUserReport(),
+            cookieKey:0,
             sessionValid:false ,
-            sessionKey:props.SessionKey,
+            redirectToHome:false ,
+            sessionKey:user.getUserCookieKey()
           }
           const cookies = new Cookies();
           var userSessionCookie= cookies.get('ZinqLoanSession')
@@ -48,15 +49,27 @@ class Result extends Component {
        * @param {*} event 
        */
       HandleLogout(event) {
-        var store=createStore(reducer)
         const cookies = new Cookies();
         cookies.remove('ZinqLoan')
-        ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToHome:true
+        })
       }
       /**
        * Rendering the Result page.
        */
     render() {
+      var store=createStore(reducer)
+      if(this.state.redirectToHome){
+         return(
+           <Provider store={store}>
+           <Redirect to={{
+             pathname: '/'
+         }}/>
+         </Provider>
+ 
+         )
+       }
       var sessionInvalidContent=
       <div>
           <MuiThemeProvider>
@@ -90,7 +103,8 @@ class Result extends Component {
     }
     const stateToProps=(state)=>{
       return{
-        SessionKey:state.SessionKey      }
+        user:state.user
+            }
     }
     const mapdispachToProps=(dispach)=>
     {

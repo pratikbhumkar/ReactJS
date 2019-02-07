@@ -19,9 +19,18 @@ var reducer= (state=intialState,action)=>{
         browsingHistory=browsingHistory.concat("User_Login")
         user.setUserHistory(browsingHistory)
         user.setUserTimestamp(date.toDateString())
-        state.SessionKey=(action.SessionKey)
+        user.setUserCookieKey(action.SessionKey)
         fetch(`http://localhost:5000/log/add?user_email=${action.Email}
         &sessionkey=${state.SessionKey}&page=${'User_Login'}&entry_type=${'success'}&user_action=${'User_Login_success'}`)
+        
+    }
+    if(action.type==='User_Welcome') {
+        browsingHistory=user.getUserHistory()
+        browsingHistory=browsingHistory.concat("User_Welcome")
+        user.setUserHistory(browsingHistory)
+        user.setUserStatus(action.status)
+        fetch(`http://localhost:5000/log/add?user_email=${action.Email}
+        &sessionkey=${state.SessionKey}&page=${'User_Welcome'}&entry_type=${'success'}&user_action=${'User_Welcome_success'}`)
         
     }
     if(action.type==='User_Status') {

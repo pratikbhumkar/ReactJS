@@ -2,23 +2,30 @@ import React, { Component } from "react";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
-import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux'
-import Income from './Income'
-import App from './App';
+
 import User from './Models/UserModel'
 import Cookies from 'universal-cookie';
 import {connect} from 'react-redux'
 import {createStore} from 'redux'
 import reducer from './Reducer/ReducerContent'
+import { Redirect } from "react-router-dom";
+
 
 class Payment extends Component {
   constructor(props) {
     
     super(props)
+    var user=new User()
+    //Checking if it is not initialized
+    if(typeof this.props.user !== 'undefined'){
+      user=this.props.user
+    }
     this.state = {cookieKey:0,
                   sessionValid:false ,
-                  sessionKey:props.SessionKey,
+                  user:props.user,
+                  sessionKey:user.getUserCookieKey(),
+                  redirectToIncome:false
                 }
 
     const cookies = new Cookies();
@@ -38,17 +45,18 @@ class Payment extends Component {
        */
       handleClick() {
         this.props.onUserbuttonclick()
-        var store=createStore(reducer)
         //Creating the user object.
         var user=new User()
         
         //Checking if it is not initialized
-        if(typeof this.props.UserObj !== 'undefined'){
-          user=this.props.UserObj
+        if(typeof this.props.user!== 'undefined'){
+          user=this.props.user
         }
         
         //Redirecting user and passing the user object.
-        ReactDOM.render(<Provider store={store}><Income UserObj={user}/></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToIncome:true
+        })
       }
       /**
        * Logs out the user when clicking the Logout button.
@@ -56,16 +64,39 @@ class Payment extends Component {
        */
       HandleLogout(event) {
         const cookies = new Cookies();
-        var store=createStore(reducer)
+        // var store=createStore(reducer)
         cookies.remove('ZinqLoan')
         //Redirecting user to  login page.
-        ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+        this.setState({
+          redirectToHome:true
+        })
       }
 
       /**
        * Rendering the Payment page.
        */
       render() {
+        var store=createStore(reducer)
+        if(this.state.redirectToHome){
+          return(
+            <Provider store={store}>
+            <Redirect to={{
+              pathname: '/'
+          }}/>
+          </Provider>
+  
+          )
+        }
+      if(this.state.redirectToIncome){
+        return(
+          <Provider store={store}>
+          <Redirect to={{
+            pathname: '/Income'
+        }}/>
+        </Provider>
+
+        )
+      }
         var sessionInvalidContent=
       <div>
           <MuiThemeProvider>
@@ -92,7 +123,7 @@ class Payment extends Component {
             <RaisedButton id="btnOwnOcc" label="Owner occupier" primary={true} style={{margin: 15 ,minWidth: 200}} 
             onClick={(event) => this.handleClick(event)}/>
             <br/>
-            <RaisedButton id="btnInvesy" label="Investment" primary={true} style={{margin: 15 ,minWidth: 200}} 
+            <RaisedButton id="btnInvest" label="Investment" primary={true} style={{margin: 15 ,minWidth: 200}} 
             onClick={(event) => this.handleClick(event)}/>
             <h1>Payment Type </h1>
             <RaisedButton id="btnPrinInt" label="Principle + Interest" primary={true} style={{margin: 15 ,minWidth: 200}} 
@@ -108,7 +139,8 @@ class Payment extends Component {
     }
     const stateToProps=(state)=>{
       return{
-        SessionKey:state.SessionKey      }
+        user:state.user
+           }
     }
       const mapdispachToProps=(dispach)=>
       {
